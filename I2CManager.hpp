@@ -4,7 +4,7 @@
 #include <vector>
 #include <map>
 
-// Forward declaration
+// Forward declaration to avoid circular dependency
 class I2CSensor;
 
 struct BusInfo {
@@ -30,23 +30,17 @@ public:
 
     /**
      * @brief Registers a sensor with the manager.
-     * @param sensor Pointer to the sensor instance.
+     * @param sensor Ref to the sensor instance.
      * @return True if registration is successful, false otherwise.
      */
-    bool registerSensor(I2CSensor* sensor);
+    bool registerSensor(I2CSensor& sensor);
 
-    /**
-     * @brief Scans a given I2C bus for devices.
-     * @param bus_num The bus to scan (0 or 1).
-     */
-    void scanBus(int bus_num);
 
 private:
-    // Private constructor for singleton
+    std::map<int, BusInfo> _buses;
+    
     I2CManager() {
         _buses[0].wire = &Wire;
         _buses[1].wire = &Wire1;
     }
-
-    std::map<int, BusInfo> _buses;
 };

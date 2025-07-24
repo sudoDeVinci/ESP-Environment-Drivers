@@ -15,26 +15,29 @@ using UniqueTimedMutex = std::unique_lock<std::timed_mutex>;
 
 class I2CSensor {
     public:
-        // The init method orchestrates the registration with the I2CManager.
+
         virtual bool init() {
-            if (!I2CManager::getInstance().registerSensor(this)) {
-                // Handle registration failure
+            if (!I2CManager::getInstance().registerSensor(*this)) {
                 _is_initialized = false;
                 return false;
             }
-            // Perform device-specific setup (e.g., writing to config registers)
+            
             if (!deviceSpecificSetup()) {
-                 _is_initialized = false;
+                _is_initialized = false;
                 return false;
             }
+
             _is_initialized = true;
             return true;
         }
     
-        // Pure virtual functions to be implemented by derived sensor classes
-        virtual void update() = 0; // For reading new data from the sensor
+       /**
+        * Pure virtual function to be implemented by derived sensor classes.
+        * This function is called periodically to update the sensor's readings.
+        * Only some sensors do this - other returnthe reading on demand.
+        */
+        virtual void update() = 0;
     
-        // Getters for sensor configuration, used by the I2CManager
         uint8_t getAddress() const { return _i2c_addr; }
         int getBusNum() const { return _bus_num; }
         int getSdaPin() const { return _sda_pin; }
@@ -42,33 +45,50 @@ class I2CSensor {
         uint32_t getMinClock() const { return _min_clock_hz; }
         uint32_t getMaxClock() const { return _max_clock_hz; }
         bool isInitialized() const { return _is_initialized; }
-    
-        // Setter for the manager to provide the configured TwoWire instance
         void setWire(TwoWire* wire) { _wire = wire; }
     
     protected:
-        // Constructor for derived classes
-        I2CSensor(uint8_t addr, int bus_num, int sda, int scl, uint32_t min_clk, uint32_t max_clk)
-            : _i2c_addr(addr), _bus_num(bus_num), _sda_pin(sda), _scl_pin(scl),
-              _min_clock_hz(min_clk), _max_clock_hz(max_clk) {}
+
+        I2CSensor(
+            uint8_t addr,
+            uint8_t bus_num,
+            uint8_t sda,
+            uint8_t scl,
+            uint32_t min_clk,
+            uint32_t max_clk)
+            :
+            _i2c_addr(addr),
+            _bus_num(bus_num),
+            _sda_pin(sda),
+            _scl_pin(scl),
+            _min_clock_hz(min_clk),
+            _max_clock_hz(max_clk) {}
     
-        // Device-specific initialization called after bus is configured
+        /**
+         * Pure virtual function to be implemented by derived sensor classes.
+         * This function is called during initialization to perform device-specific setup.
+         * @return True if the setup is successful, false otherwise.
+         */
         virtual bool deviceSpecificSetup() = 0;
     
-        // Member variables
+        bool _is_initialized = false;
         uint8_t _i2c_addr;
-        int _bus_num;
-        int _sda_pin;
-        int _scl_pin;
+        uint8_t _bus_num;
+        uint8_t _sda_pin;
+        uint8_t _scl_pin;
         uint32_t _min_clock_hz;
         uint32_t _max_clock_hz;
         mutable std::timed_mutex _i2cMutex;
         static constexpr std::chrono::milliseconds I2C_TIMEOUT_MS{100};
         static constexpr TickType_t I2C_DELAY_MS = 5 / portTICK_PERIOD_MS;
         static constexpr TickType_t I2C_INIT_DELAY_MS = 250 / portTICK_PERIOD_MS;
-    
-        bool _is_initialized = false;
-        TwoWire* _wire = nullptr; // The manager will set this
+
+        /**
+         * Pointer to the TwoWire instance used for I2C communication.
+         * This will be set during registration.
+         */
+        TwoWire* _wire = nullptr;
+
 
         /**
          * Writes a single byte to the specified register.
@@ -78,10 +98,10 @@ class I2CSensor {
         void writeToReg(uint8_t reg, uint8_t value) const {
             UniqueTimedMutex lock(_i2cMutex, std::defer_lock);
             if (lock.try_lock_for(I2C_TIMEOUT_MS)) {
-                wire.beginTransmission(_i2c_addr);
-                wire.write(reg);
-                wire.write(value);
-                wire.endTransmission();
+                _wire->beginTransmission(_i2c_addr);
+                _wire->write(reg);
+                _wire->write(value);
+                _wire->endTransmission();
             } else {
                 // TODO: Some logging - will handle later after base functionality is working
             }
@@ -96,9 +116,9 @@ class I2CSensor {
         void writeToReg(uint8_t reg) const {
             UniqueTimedMutex lock(_i2cMutex, std::defer_lock);
             if (lock.try_lock_for(I2C_TIMEOUT_MS)) {
-                wire.beginTransmission(_i2c_addr);
-                wire.write(reg);
-                wire.endTransmission();
+                _wire->beginTransmission(_i2c_addr);
+                _wire->write(reg);
+                _wire->endTransmission();
             } else {
                 // TODO: Some logging - will handle later after base functionality is working
             }
@@ -116,15 +136,195 @@ class I2CSensor {
                 static_cast<uint8_t>(cmd & 0xFF) // Low byte
             };
 
-            UniqueTimedMutex lock(i2cMutex, std::defer_lock);
+            UniqueTimedMutex lock(_i2cMutex, std::defer_lock);
             if (lock.try_lock_for(I2C_TIMEOUT_MS)) {
-                wire.beginTransmission(this->address);
-                wire.write(cmdBytes.data(), cmdBytes.size());
-                wire.endTransmission();
+                _wire->beginTransmission(_i2c_addr);
+                _wire->write(cmdBytes.data(), cmdBytes.size());
+                _wire->endTransmission();
             } else {
                 // TODO: Some logging - will handle later after base functionality is working
             }
 
             vTaskDelay(I2C_DELAY_MS);
+        }
+
+        /**
+         * Performs a CRC8 calculation on the supplied values.
+         * @param data  Pointer to the data to use when calculating the CRC8.
+         * @param len   The number of bytes in 'data'.
+         * @return The computed CRC8 value.
+         */
+        uint8_t crc8(const uint8_t *data, int len) const {
+            const uint8_t POLYNOMIAL(0x31);
+            uint8_t crc(0xFF);
+
+            for (int j = len; j; --j) {
+                crc ^= *data++;
+                for (int i = 8; i; --i) {
+                    crc = (crc & 0x80) ? (crc << 1) ^ POLYNOMIAL : (crc << 1);
+                }
+            }
+            return crc;
+        }
+
+        /**
+         * Find the mean of an array of numerical type T.
+         * @param arr The array of type T with size N.
+         * @return The mean value of the array.
+         */
+        template <typename T, size_t N>
+        float mean(const std::array<T, N> &arr) const {
+            long sum = 0;
+            for (size_t i = 0; i < N; ++i) {
+                sum += arr[i];
+            }
+            return sum / (float)N;
+        }
+
+        /**
+         * Find the mean of an vector of numerical type T.
+         * @param arr The vector of type T with size N.
+         * @return The mean value of the array.
+         */
+        template <typename T>
+        float mean(const std::vector<T> &vec) const {
+            long sum = 0;
+            for (const T& num : vec) {
+                sum += num;
+            }
+
+            return sum / (float)vec.size();
+        }
+
+        /**
+         * Find the standard deviation of an array of numerical type T.
+         * @tparam T The type of the elements in the array.
+         * @tparam N The size of the array.
+         * @param arr The array of type T with size N.
+         * @param meanValue The mean value to use for the calculation. If NaN, it will be calculated from the array.
+         * @return The standard deviation of the array.
+         */
+        template <typename T, size_t N>
+        float stddev(const std::array<T, N> &arr, const float meanValue = NAN) const {
+            float mval = std::isnan(meanValue) ? mean(arr) : meanValue;
+            if (N == 0) return 0.0f;
+
+            float sum = 0.0f;
+            for (size_t i = 0; i < N; ++i) {
+                sum += (arr[i] - mval) * (arr[i] - mval);
+            }
+            return sqrt(sum / (float)N);
+        }
+
+        /**
+         * Find the standard deviation of a vector of numerical type T.
+         * NOTE: If the meanValue is NaN, it will be calculated from the vector.
+         * @tparam T The type of the elements in the vector.
+         * @param vec The vector of type T.
+         * @param meanValue The mean value to use for the calculation. If NaN, it will be calculated from the array.
+         * @return The standard deviation of the vector.
+         */
+        template <typename T>
+        float stddev(const std::vector<T> &vec, const float meanValue = NAN) const {
+            float mval = std::isnan(meanValue) ? mean(vec) : meanValue;
+            if (vec.empty()) return 0.0f;
+
+            float sum = 0.0f;
+            for (const T& num : vec) {
+                sum += (num - mval) * (num - mval);
+            }
+            return sqrt(sum / (float)vec.size());
+        }
+
+        /**
+         * Find the quartiles of an array of numerical type T.
+         * NOTE: This function mutates the input array by sorting it.
+         * @tparam T The type of the elements in the array.
+         * @tparam N The size of the array.
+         * @param arr The array of type T with size N.
+         * @return An array containing the first quartile, median, and third quartile.
+         */
+        template <typename T, size_t N>
+        std::array<float, 3> quartiles(std::array<T, N> &arr) const {
+            std::sort(arr.begin(), arr.end());
+            float q1 = arr[N / 4];
+            float q3 = arr[(3 * N) / 4];
+            float median = arr[N / 2];
+            
+            std::array<float, 3> quartiles = {q1, median, q3};
+            return quartiles;
+        }
+
+        /**
+         * Find the quartiles of an array of numerical type T.
+         * NOTE: This function mutates the input array by sorting it.
+         * @tparam T The type of the elements in the array.
+         * @param vec The array of type T with size N.
+         * @return An array containing the first quartile, median, and third quartile.
+         */
+        template <typename T>
+        std::array<float, 3> quartiles(std::vector<T> &vec) const {
+            std::sort(vec.begin(), vec.end());
+            size_t N = vec.size();
+            float q1 = vec[N / 4];
+            float q3 = vec[(3 * N) / 4];
+            float median = vec[N / 2];
+            
+            std::array<float, 3> quartiles = {q1, median, q3};
+            return quartiles;
+        }
+
+        /**
+         * Remove outliers from an array of numerical type T using the IQR method.
+         * @param arr The array of type T.
+         * @param q1 The first quartile.
+         * @param q3 The third quartile.
+         * @return A vector containing the filtered values without outliers.
+         */
+        template <typename T, size_t N>
+        std::vector<T> removeOutliers(
+            const std::array<T, N> &arr,
+            float q1,
+            float q3
+        ) const {
+            float iqr = q3 - q1;
+            float lower_bound = q1 - 1.5 * iqr;
+            float upper_bound = q3 + 1.5 * iqr;
+
+            std::vector<T> filtered;
+            filtered.reserve(N);
+            for (size_t i = 0; i < N; ++i) {
+                if (arr[i] >= lower_bound && arr[i] <= upper_bound) {
+                    filtered.push_back(arr[i]);
+                }
+            }
+            return filtered;
+        }
+
+        /**
+         * Remove outliers from a vector of numerical type T using the IQR method.
+         * @param vec The vector of type T.
+         * @param q1 The first quartile.
+         * @param q3 The third quartile.
+         * @return A vector containing the filtered values without outliers.
+         */
+        template <typename T>
+        std::vector<T> removeOutliers(
+            const std::vector<T> &vec,
+            float q1,
+            float q3
+        ) const {
+            float iqr = q3 - q1;
+            float lower_bound = q1 - 1.5 * iqr;
+            float upper_bound = q3 + 1.5 * iqr;
+
+            std::vector<T> filtered;
+            filtered.reserve(vec.size());
+            for (const T& value : vec) {
+                if (value >= lower_bound && value <= upper_bound) {
+                    filtered.push_back(value);
+                }
+            }
+            return filtered;
         }
     };
