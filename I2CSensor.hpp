@@ -5,6 +5,7 @@
 #include <array>
 #include <vector>
 #include <algorithm>
+#include <numeric>
 #include <cmath>
 #include <chrono>
 #include <mutex>
@@ -174,10 +175,7 @@ class I2CSensor {
          */
         template <typename T, size_t N>
         float mean(const std::array<T, N> &arr) const {
-            long sum = 0;
-            for (size_t i = 0; i < N; ++i) {
-                sum += arr[i];
-            }
+            long sum = std::accumulate(arr.begin(), arr.end(), 0L);
             return sum / (float)N;
         }
 
@@ -188,11 +186,7 @@ class I2CSensor {
          */
         template <typename T>
         float mean(const std::vector<T> &vec) const {
-            long sum = 0;
-            for (const T& num : vec) {
-                sum += num;
-            }
-
+            long sum = std::accumulate(vec.begin(), vec.end(), 0L);
             return sum / (float)vec.size();
         }
 
@@ -293,11 +287,16 @@ class I2CSensor {
 
             std::vector<T> filtered;
             filtered.reserve(N);
-            for (size_t i = 0; i < N; ++i) {
-                if (arr[i] >= lower_bound && arr[i] <= upper_bound) {
-                    filtered.push_back(arr[i]);
+
+            std::copy_if(
+                arr.begin(),
+                arr.end(),
+                std::back_inserter(filtered),
+                [lower_bound, upper_bound](const T& value){
+                    return value >= lower_bound && value <= upper_bound;
                 }
-            }
+            );
+
             return filtered;
         }
 
@@ -320,11 +319,16 @@ class I2CSensor {
 
             std::vector<T> filtered;
             filtered.reserve(vec.size());
-            for (const T& value : vec) {
-                if (value >= lower_bound && value <= upper_bound) {
-                    filtered.push_back(value);
+
+            std::copy_if(
+                vec.begin(),
+                vec.end(),
+                std::back_inserter(filtered),
+                [lower_bound, upper_bound](const T& value) {
+                    return value >= lower_bound && value <= upper_bound;
                 }
-            }
+            );
+
             return filtered;
         }
     };

@@ -39,12 +39,18 @@ bool I2CManager::registerSensor(I2CSensor& sensor) {
      * Check if the sensor address conflicts with any existing sensors
      * on the bus - if so, return false.
      */
-    for (const I2CSensor* existing_sensor : bus_info.devices) {
-        if (existing_sensor->getAddress() == sensor.getAddress()) {
-            // debug serial print: "Sensor address conflict"
-            return false;
-        }
+    if (std::any_of(
+            bus_info.devices.cbegin(),
+            bus_info.devices.cend(),
+            [&sensor](const I2CSensor* existing_sensor) {
+                return existing_sensor->getAddress() == sensor.getAddress();
+            }
+        )
+    ) {
+        // debug serial print: "Sensor address conflict"
+        return false;
     }
+    
 
 
     // Negatiating Clock speeds for sensor along selected bus.
@@ -61,14 +67,19 @@ bool I2CManager::registerSensor(I2CSensor& sensor) {
 
     }
 
+
     /**
      * Check if this new speed is too low for any existing sensors on the bus.
      */
-    for (const I2CSensor* existing_sensor : bus_info.devices) {
-        if (new_potential_clock < existing_sensor->getMinClock()) {
-            // debug serial print: "New clock speed too low for existing sensor"
-            return false;
+    if (std::any_of(
+        bus_info.devices.cbegin(),
+        bus_info.devices.cend(),
+        [&new_potential_clock](const I2CSensor* existing_sensor) {
+            return new_potential_clock < existing_sensor->getMinClock();
         }
+    )){
+        // debug serial print: "Sensor address conflict"
+        return false;
     }
 
     /**
