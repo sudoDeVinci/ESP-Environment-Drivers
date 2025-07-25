@@ -39,7 +39,6 @@ enum MEASUREMENT_MODE {
 
 struct SHT31 : public I2CSensor {
     protected:
-        static constexpr uint16_t MAX_SAMPLES = 100;
         /**Internal humidity rep. */
         float humidity;
         /**Internal temperature rep. */

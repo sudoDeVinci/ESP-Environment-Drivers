@@ -45,6 +45,7 @@ class I2CSensor {
         int getSclPin() const { return _scl_pin; }
         uint32_t getMinClock() const { return _min_clock_hz; }
         uint32_t getMaxClock() const { return _max_clock_hz; }
+        uint16_t getMaxSamples const ( return MAX_SAMPLES; )
         bool isInitialized() const { return _is_initialized; }
         void setWire(TwoWire* wire) { _wire = wire; }
     
@@ -83,6 +84,7 @@ class I2CSensor {
         static constexpr std::chrono::milliseconds I2C_TIMEOUT_MS{100};
         static constexpr TickType_t I2C_DELAY_MS = 5 / portTICK_PERIOD_MS;
         static constexpr TickType_t I2C_INIT_DELAY_MS = 250 / portTICK_PERIOD_MS;
+        static constexpr uint16_t MAX_SAMPLES = 100;
 
         /**
          * Pointer to the TwoWire instance used for I2C communication.

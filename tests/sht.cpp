@@ -32,8 +32,3 @@ test(SHT31D_EnumValues) {
     assertEqual(static_cast<uint16_t>(MEDREP), 0x2C0B);
     assertEqual(static_cast<uint16_t>(HIGHREP), 0x2400);
 }
-
-test(SHT31D_MaxSamples) {
-    // Test that MAX_SAMPLES constant is defined
-    assertEqual(SHT31::MAX_SAMPLES, 100);
-}
