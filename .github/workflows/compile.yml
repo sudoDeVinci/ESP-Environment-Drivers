@@ -1,17 +1,17 @@
-name: Compile
+name: Compile and Test
 
 on: 
   push:
   pull_request:
 
 jobs:
-  compile-codebase:
+  compile:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Compile sketch
+      - name: Compile main sketch
         uses: arduino/compile-sketches@v1
         with:
           fqbn: 'esp32:esp32:esp32s3'
@@ -20,24 +20,31 @@ jobs:
           platforms: |
             - name: esp32:esp32
               source-url: https://espressif.github.io/arduino-esp32/package_esp32_index.json
-          libraries: |
-            - name: AUnit 
-  
-  compile-tests:
+
+  test:
     runs-on: ubuntu-latest
-    needs: compile-codebase
+    needs: compile
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install AUnit library
-        uses: arduino/compile-sketches@v1
-        with:
-          fqbn: 'esp32:esp32:esp32s3'
-          sketch-paths: |
-            - testing/
-          platforms: |
-            - name: esp32:esp32
-              source-url: https://espressif.github.io/arduino-esp32/package_esp32_index.json
-          libraries: |
-            - name: AUnit 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+
+      - name: Clone EpoxyDuino
+        run: |
+          git clone https://github.com/bxparks/EpoxyDuino.git
+          cd EpoxyDuino
+          make
+
+      - name: Clone AUnit
+        run: |
+          git clone https://github.com/bxparks/AUnit.git
+
+      - name: Build and run tests
+        run: |
+          cd tests
+          make EPOXY_DUINO_DIR=../EpoxyDuino AUNIT_DIR=../AUnit
+          ./tests.out
