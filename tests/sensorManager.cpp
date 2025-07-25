@@ -1,0 +1,82 @@
+#include <AUnit.h>
+#include "../I2CManager.hpp"
+#include "../I2CSensor.hpp"
+
+// Mock sensor class for testing
+class MockSensor : public I2CSensor {
+private:
+    bool setup_success;
+    
+protected:
+    bool deviceSpecificSetup() override {
+        return setup_success;
+    }
+    
+public:
+    MockSensor(uint8_t addr, uint8_t bus, uint8_t sda, uint8_t scl, 
+               uint32_t min_clk, uint32_t max_clk, bool setup_ok = true)
+        : I2CSensor(addr, bus, sda, scl, min_clk, max_clk), setup_success(setup_ok) {}
+    
+    void update() override {
+        // Mock implementation - does nothing
+    }
+};
+
+test(I2CManager_Singleton) {
+    I2CManager& manager1 = I2CManager::getInstance();
+    I2CManager& manager2 = I2CManager::getInstance();
+    
+    // Both references should point to the same instance
+    assertEqual(&manager1, &manager2);
+}
+
+test(I2CManager_RegisterSensor_Success) {
+    MockSensor sensor(0x48, 0, 21, 22, 100000, 400000);
+    I2CManager& manager = I2CManager::getInstance();
+    
+    bool result = manager.registerSensor(sensor);
+    assertTrue(result);
+    assertTrue(sensor.isInitialized());
+}
+
+test(I2CManager_RegisterSensor_AddressConflict) {
+    MockSensor sensor1(0x48, 0, 21, 22, 100000, 400000);
+    MockSensor sensor2(0x48, 0, 21, 22, 100000, 400000); // Same address
+    
+    I2CManager& manager = I2CManager::getInstance();
+    
+    assertTrue(manager.registerSensor(sensor1));
+    assertFalse(manager.registerSensor(sensor2)); // Should fail due to address conflict
+}
+
+test(I2CManager_RegisterSensor_PinMismatch) {
+    MockSensor sensor1(0x48, 0, 21, 22, 100000, 400000);
+    MockSensor sensor2(0x49, 0, 19, 20, 100000, 400000); // Different pins
+    
+    I2CManager& manager = I2CManager::getInstance();
+    
+    assertTrue(manager.registerSensor(sensor1));
+    assertFalse(manager.registerSensor(sensor2)); // Should fail due to pin mismatch
+}
+
+test(I2CManager_ClockNegotiation) {
+    MockSensor fastSensor(0x48, 1, 21, 22, 100000, 1000000);   // 1MHz max
+    MockSensor slowSensor(0x49, 1, 21, 22, 50000, 400000);     // 400kHz max
+    
+    I2CManager& manager = I2CManager::getInstance();
+    
+    assertTrue(manager.registerSensor(fastSensor));
+    assertTrue(manager.registerSensor(slowSensor));
+    
+    // Clock should be negotiated to the slower sensor's max (400kHz)
+}
+
+test(I2CManager_ClockTooSlow) {
+    MockSensor fastSensor(0x48, 1, 19, 20, 500000, 1000000);   // Needs at least 500kHz
+    MockSensor slowSensor(0x49, 1, 19, 20, 50000, 300000);     // Max 300kHz
+    
+    I2CManager& manager = I2CManager::getInstance();
+    
+    assertTrue(manager.registerSensor(slowSensor));
+    assertFalse(manager.registerSensor(fastSensor)); // Should fail - clock too slow
+}
