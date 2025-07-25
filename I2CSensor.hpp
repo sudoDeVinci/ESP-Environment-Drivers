@@ -37,7 +37,7 @@ class I2CSensor {
         * This function is called periodically to update the sensor's readings.
         * Only some sensors do this - other returnthe reading on demand.
         */
-        virtual bool update(void) = {return _is_initialized};
+        virtual bool update(void) = {return _is_initialized;};
     
         uint8_t getAddress() const { return _i2c_addr; }
         int getBusNum() const { return _bus_num; }
