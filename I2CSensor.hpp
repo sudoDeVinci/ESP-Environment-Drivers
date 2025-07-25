@@ -45,7 +45,7 @@ class I2CSensor {
         int getSclPin(void) const { return _scl_pin; }
         uint32_t getMinClock(void) const { return _min_clock_hz; }
         uint32_t getMaxClock(void) const { return _max_clock_hz; }
-        uint16_t getMaxSamples(void) const ( return MAX_SAMPLES; )
+        uint16_t getMaxSamples(void) const { return MAX_SAMPLES; }
         bool isInitialized(void) const { return _is_initialized; }
         void setWire(TwoWire* wire) { _wire = wire; }
     
