@@ -17,9 +17,7 @@ public:
                uint32_t min_clk, uint32_t max_clk, bool setup_ok = true)
         : I2CSensor(addr, bus, sda, scl, min_clk, max_clk), setup_success(setup_ok) {}
     
-    void update() override {
-        // Mock implementation - does nothing
-    }
+        bool update() override { return this->_is_initialized; }
 };
 
 test(I2CManager_Singleton) {
