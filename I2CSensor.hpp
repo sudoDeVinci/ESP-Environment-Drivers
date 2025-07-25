@@ -19,16 +19,16 @@ class I2CSensor {
 
         virtual bool init() {
             if (!I2CManager::getInstance().registerSensor(*this)) {
-                _is_initialized = false;
+                this -> _is_initialized = false;
                 return false;
             }
             
             if (!deviceSpecificSetup()) {
-                _is_initialized = false;
+                this -> _is_initialized = false;
                 return false;
             }
 
-            _is_initialized = true;
+            this -> _is_initialized = true;
             return true;
         }
     
@@ -37,7 +37,7 @@ class I2CSensor {
         * This function is called periodically to update the sensor's readings.
         * Only some sensors do this - other returnthe reading on demand.
         */
-        virtual bool update(void) = {return _is_initialized;};
+        virtual bool update(void) = 0;
     
         uint8_t getAddress() const { return _i2c_addr; }
         int getBusNum() const { return _bus_num; }
