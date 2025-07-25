@@ -33,18 +33,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential
 
-      - name: Clone AUnit first
+      - name: Clone AUnit
         run: |
           git clone https://github.com/bxparks/AUnit.git
 
       - name: Clone EpoxyDuino
         run: |
           git clone https://github.com/bxparks/EpoxyDuino.git
-
-      - name: Build EpoxyDuino (without running its tests)
-        run: |
-          cd EpoxyDuino
-          make -j4 epoxy_duino
 
       - name: Build and run tests
         run: |
