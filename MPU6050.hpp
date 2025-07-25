@@ -95,7 +95,7 @@ class MPU6050 : public I2CSensor {
          * This sensor doesn't update internally so we don't do anythig here.
          */
         bool update(void) override {
-            if (!_is_initialized) return;
+            return _is_initialized;
         }
 
         /**
