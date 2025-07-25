@@ -37,7 +37,7 @@ jobs:
         run: |
           git clone https://github.com/bxparks/EpoxyDuino.git
           cd EpoxyDuino
-          make
+          make -C libraries/EpoxyDuino
 
       - name: Clone AUnit
         run: |
