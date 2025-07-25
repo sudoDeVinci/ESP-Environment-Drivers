@@ -39,14 +39,14 @@ class I2CSensor {
         */
         virtual bool update(void) = 0;
     
-        uint8_t getAddress() const { return _i2c_addr; }
-        int getBusNum() const { return _bus_num; }
-        int getSdaPin() const { return _sda_pin; }
-        int getSclPin() const { return _scl_pin; }
-        uint32_t getMinClock() const { return _min_clock_hz; }
-        uint32_t getMaxClock() const { return _max_clock_hz; }
-        uint16_t getMaxSamples const ( return MAX_SAMPLES; )
-        bool isInitialized() const { return _is_initialized; }
+        uint8_t getAddress(void) const { return _i2c_addr; }
+        int getBusNum(void) const { return _bus_num; }
+        int getSdaPin(void) const { return _sda_pin; }
+        int getSclPin(void) const { return _scl_pin; }
+        uint32_t getMinClock(void) const { return _min_clock_hz; }
+        uint32_t getMaxClock(void) const { return _max_clock_hz; }
+        uint16_t getMaxSamples(void) const ( return MAX_SAMPLES; )
+        bool isInitialized(void) const { return _is_initialized; }
         void setWire(TwoWire* wire) { _wire = wire; }
     
     protected:
