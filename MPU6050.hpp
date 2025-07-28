@@ -144,7 +144,7 @@ class MPU6050 : public I2CSensor {
 
             {
                 UniqueTimedMutex lock(this->_i2cMutex, std::defer_lock);
-                if (lock.try_lock_for(I2CSensor::I2C_TIMEOUT_MS)) {
+                if (lock.try_lock_for(MPU6050::I2C_TIMEOUT_MS)) {
                 
                     _wire->requestFrom(this->_i2c_addr, (uint8_t)6);
                     for (size_t i = 0; i < 3; ++i) {

@@ -67,7 +67,7 @@ struct SHT31 : public I2CSensor {
          */
         void reset(void) const {
             writeCommand(SOFTRESET);
-            vTaskDelay(I2CSensor::I2C_INIT_DELAY_MS);
+            vTaskDelay(SHT31::I2C_INIT_DELAY_MS);
         }
 
         /**
@@ -112,7 +112,7 @@ struct SHT31 : public I2CSensor {
             uint8_t data[3] = {0, 0, 0};
 
             UniqueTimedMutex lock(this->_i2cMutex, std::defer_lock);
-            if (lock.try_lock_for(I2CSensor::I2C_TIMEOUT_MS)) {
+            if (lock.try_lock_for(SHT31::I2C_TIMEOUT_MS)) {
                 if (this->_wire->requestFrom(this->_i2c_addr, (uint8_t)3) == 3) {
                     data[0] = this->_wire->read();
                     data[1] = this->_wire->read();
@@ -139,7 +139,7 @@ struct SHT31 : public I2CSensor {
 
             {
                 UniqueTimedMutex lock(this->_i2cMutex, std::defer_lock);
-                if (lock.try_lock_for(I2CSensor::I2C_TIMEOUT_MS)) {
+                if (lock.try_lock_for(SHT31::I2C_TIMEOUT_MS)) {
                     
                     if (this->_wire->requestFrom(this->_i2c_addr, (uint8_t)6) != 6) return false;
 

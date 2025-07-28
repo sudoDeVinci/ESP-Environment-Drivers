@@ -107,7 +107,7 @@ class I2CSensor {
          */
         void writeToReg(uint8_t reg, uint8_t value) const {
             UniqueTimedMutex lock(_i2cMutex, std::defer_lock);
-            if (lock.try_lock_for(I2C_TIMEOUT_MS)) {
+            if (lock.try_lock_for(I2CSensor::I2C_TIMEOUT_MS)) {
                 _wire->beginTransmission(_i2c_addr);
                 _wire->write(reg);
                 _wire->write(value);
@@ -125,7 +125,7 @@ class I2CSensor {
          */
         void writeToReg(uint8_t reg) const {
             UniqueTimedMutex lock(_i2cMutex, std::defer_lock);
-            if (lock.try_lock_for(I2C_TIMEOUT_MS)) {
+            if (lock.try_lock_for(I2CSensor::I2C_TIMEOUT_MS)) {
                 _wire->beginTransmission(_i2c_addr);
                 _wire->write(reg);
                 _wire->endTransmission();
