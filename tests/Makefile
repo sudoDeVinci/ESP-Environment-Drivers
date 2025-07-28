@@ -6,15 +6,14 @@ AUNIT_DIR ?= ../AUnit
 # Include parent directory for our headers
 CPPFLAGS += -I..
 
-# Define EPOXY_DUINO for conditional compilation - ADD THIS LINE
+# Define EPOXY_DUINO for conditional compilation
 CPPFLAGS += -DEPOXY_DUINO
 
 # Add AUnit library
 CPPFLAGS += -I$(AUNIT_DIR)/src
 
-# Add ALL your source files here
+# Add only.cpp source files here
 OBJS += ../I2CManager.o
-OBJS += ../I2CSensor.o
 
 # Include all test files
 OBJS += tests.o
