@@ -1,4 +1,4 @@
-name: Compile and Test
+name: Compile
 
 on: 
   push:
@@ -21,28 +21,3 @@ jobs:
             - name: esp32:esp32
               source-url: https://espressif.github.io/arduino-esp32/package_esp32_index.json
 
-  test:
-    runs-on: ubuntu-latest
-    needs: compile
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential
-
-      - name: Clone AUnit
-        run: |
-          git clone https://github.com/bxparks/AUnit.git
-
-      - name: Clone EpoxyDuino
-        run: |
-          git clone https://github.com/bxparks/EpoxyDuino.git
-
-      - name: Build and run tests
-        run: |
-          cd tests
-          make EPOXY_DUINO_DIR=../EpoxyDuino AUNIT_DIR=../AUnit
-          ./tests.out

@@ -1,0 +1,31 @@
+name: Test
+
+on: 
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+
+      - name: Clone AUnit
+        run: |
+          git clone https://github.com/bxparks/AUnit.git
+
+      - name: Clone EpoxyDuino
+        run: |
+          git clone https://github.com/bxparks/EpoxyDuino.git
+
+      - name: Build and run tests
+        run: |
+          cd tests
+          make EPOXY_DUINO_DIR=../EpoxyDuino AUNIT_DIR=../AUnit
+          ./tests.out

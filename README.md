@@ -1,6 +1,7 @@
 # Thread-Safe BusIO Driver Alternative
 
 [![Compile](https://github.com/sudoDeVinci/ESP-Environment-Drivers/actions/workflows/compile.yml/badge.svg?branch=main)](https://github.com/sudoDeVinci/ESP-Environment-Drivers/actions/workflows/compile.yml)
+[![Unit Tests](https://github.com/sudoDeVinci/ESP-Environment-Drivers/actions/workflows/testing.yml/badge.svg?branch=main)](https://github.com/sudoDeVinci/ESP-Environment-Drivers/actions/workflows/testing.yml)
 ![Doxygen](/assets/doxygen_badge.svg)
 
 
