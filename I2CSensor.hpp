@@ -82,9 +82,15 @@ class I2CSensor {
         uint32_t _max_clock_hz;
         mutable std::timed_mutex _i2cMutex;
         static constexpr std::chrono::milliseconds I2C_TIMEOUT_MS{100};
-        static constexpr uint32_t I2C_DELAY_MS = 5 / portTICK_PERIOD_MS;
-        static constexpr uint32_t I2C_INIT_DELAY_MS = 250 / portTICK_PERIOD_MS;
-        static constexpr uint16_t MAX_SAMPLES = 100;
+        
+        // Use conditional compilation for delay values
+        #ifdef EPOXY_DUINO
+            static constexpr uint32_t I2C_DELAY_MS = 5;
+            static constexpr uint32_t I2C_INIT_DELAY_MS = 250;
+        #else
+            static constexpr uint32_t I2C_DELAY_MS = 5 / portTICK_PERIOD_MS;
+            static constexpr uint32_t I2C_INIT_DELAY_MS = 250 / portTICK_PERIOD_MS;
+        #endif
 
         /**
          * Pointer to the TwoWire instance used for I2C communication.

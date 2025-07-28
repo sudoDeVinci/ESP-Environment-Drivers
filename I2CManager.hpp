@@ -4,6 +4,17 @@
 #include <vector>
 #include <map>
 
+// Handle ESP32 vs test environment differences
+#ifdef EPOXY_DUINO
+    // For EpoxyDuino tests - use standard delay
+    #define vTaskDelay(x) delay(x)
+    #define portTICK_PERIOD_MS 1
+#else
+    // For ESP32 - use FreeRTOS
+    #include <freertos/FreeRTOS.h>
+    #include <freertos/task.h>
+#endif
+
 // Forward declaration to avoid circular dependency
 class I2CSensor;
 
@@ -40,8 +51,16 @@ private:
     std::map<int, BusInfo> _buses;
     
     I2CManager() {
-        TwoWire w0 = TwoWire(0);
-        TwoWire w1 = TwoWire(1);
+        #ifdef EPOXY_DUINO
+            // EpoxyDuino uses default TwoWire constructor
+            static TwoWire w0;
+            static TwoWire w1;
+        #else
+            // ESP32 uses TwoWire(bus_number)
+            static TwoWire w0(0);
+            static TwoWire w1(1);
+        #endif
+        
         _buses[0].wire = &w0;
         _buses[1].wire = &w1;
     }
