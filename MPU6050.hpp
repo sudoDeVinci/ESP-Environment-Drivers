@@ -7,6 +7,13 @@
 #define MPU6050_WHO_AM_I_REG 0x75
 #define MPU6050_PWR_MGMT_1_REG 0x6B
 
+// Add clamp function for C++11 compatibility
+#ifndef EPOXY_DUINO
+    template<class T>
+    constexpr const T& clamp(const T& v, const T& lo, const T& hi) {
+        return (v < lo) ? lo : (hi < v) ? hi : v;
+    }
+#endif
 
 /**
  * Enumeration for Digital Low Pass Filter (DLPF)
@@ -171,8 +178,7 @@ class MPU6050 : public I2CSensor {
             #ifndef EPOXY_DUINO
                 samples = std::clamp(samples, (uint16_t)30, MAX_SAMPLES);
             #else
-                samples = samples > MAX_SAMPLES ? MAX_SAMPLES : samples;
-                samples = samples < (uint16_t)30 ? (uint16_t)30 : samples;
+                samples = clamp(samples, (uint16_t)30, MAX_SAMPLES);
             #endif
             
             std::array<std::vector<float>, 3> gyroSamples;
