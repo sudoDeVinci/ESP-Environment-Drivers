@@ -43,4 +43,4 @@ test(MPU6050_ReadGyro_NotInitialized) {
     assertEqual(reading[2], 0.0f);
 }
 
-#end
+#endif
