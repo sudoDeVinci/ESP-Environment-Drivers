@@ -1,6 +1,7 @@
 #pragma once
 
 #include "I2CSensor.hpp"
+#include <unordered_map>
 
 #define MPU6050_ADDR 0x68
 #define MPU6050_WHO_AM_I_REG 0x75
@@ -36,17 +37,6 @@ enum LSB_SENSITIVITY {
 };
 
 /**
- * Mapping of LSB sensitivity values to their corresponding sensitivity factors.
- * This is used to convert raw gyro readings into meaningful values.
- */
-const std::unordered_map<LSB_SENSITIVITY, float> LSB_MAP = {
-    {LSB_SENSITIVITY::LSB_131P0, 131.0f},
-    {LSB_SENSITIVITY::LSB_65P5, 65.5f},
-    {LSB_SENSITIVITY::LSB_32P8, 32.8f},
-    {LSB_SENSITIVITY::LSB_16P4, 16.4f}
-};
-
-/**
  * Enumeration for MPU6050 register addresses.
  * These are used to read and write data from/to the MPU6050 sensor.
  */
@@ -69,9 +59,18 @@ class MPU6050 : public I2CSensor {
     
         DLPF_CFG filter;
         float sensitivity;
-        static constexpr uint16_t MAX_SAMPLES = 500;
         MPU_XYZ lastGyro;
         MPU_XYZ gyroOffsets = {0.0f, 0.0f, 0.0f};
+        /**
+         * Mapping of LSB sensitivity values to their corresponding sensitivity factors.
+         * This is used to convert raw gyro readings into meaningful values.
+         */
+        const static std::unordered_map<LSB_SENSITIVITY, float> LSB_MAP = {
+            {LSB_SENSITIVITY::LSB_131P0, 131.0f},
+            {LSB_SENSITIVITY::LSB_65P5, 65.5f},
+            {LSB_SENSITIVITY::LSB_32P8, 32.8f},
+            {LSB_SENSITIVITY::LSB_16P4, 16.4f}
+        };
 
         bool deviceSpecificSetup() override {
             powerOn();
@@ -89,7 +88,9 @@ class MPU6050 : public I2CSensor {
             uint8_t scl,
             DLPF_CFG filter = DLPF_256HZ,
             LSB_SENSITIVITY lsb = LSB_65P5
-        ): I2CSensor(MPU6050_ADDR, bus_num, sda, scl, 10000, 400000) {}
+        ): I2CSensor(MPU6050_ADDR, bus_num, sda, scl, 10000, 400000), filter(filter)  {
+            this->sensitivity = LSB_MAP.at(lsb);
+        }
 
         /**
          * This sensor doesn't update internally so we don't do anythig here.
@@ -151,7 +152,7 @@ class MPU6050 : public I2CSensor {
                 UniqueTimedMutex lock(this->_i2cMutex, std::defer_lock);
                 if (lock.try_lock_for(I2CSensor::I2C_TIMEOUT_MS)) {
                 
-                    _wire->requestFrom(this->_i2c_addr, 6);
+                    _wire->requestFrom(this->_i2c_addr, (uint8)6);
                     for (size_t i = 0; i < 3; ++i) {
                         if (_wire->available() >= 2) {
                             int16_t rawValue = (_wire->read() << 8) | _wire->read();
@@ -173,11 +174,19 @@ class MPU6050 : public I2CSensor {
          * @return An averaged MPU_XYZ containing the mean values for each axis.
          */
         MPU_XYZ readGyroSampled(uint16_t samples = MAX_SAMPLES) const {
-            samples = std::clamp(samples, (uint16_t)30, MAX_SAMPLES);
+            #ifdef EPOXY_DUINO
+                samples = std::clamp(samples, (uint16_t)30, MAX_SAMPLES);
+            #else
+                samples = samples > MAX_SAMPLES ? MAX_SAMPLES : samples;
+                samples = samples < (uint16_t)30 ? (uint16_t)30 : samples;
+            #endif
+            
             std::array<std::vector<float>, 3> gyroSamples;
+            
             for (size_t i = 0; i < 3; ++i) {
                 gyroSamples[i].reserve(samples);
             }
+
             for (int i = 0; i < samples; ++i) {
                 MPU_XYZ sample = readGyro();
                 for (size_t j = 0; j < 3; ++j) {
