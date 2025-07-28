@@ -1,6 +1,5 @@
 #pragma once
 
-#include "freertos/FreeRTOS.h"
 #include <Wire.h>
 #include "I2CManager.hpp"
 #include <array>
@@ -83,8 +82,8 @@ class I2CSensor {
         uint32_t _max_clock_hz;
         mutable std::timed_mutex _i2cMutex;
         static constexpr std::chrono::milliseconds I2C_TIMEOUT_MS{100};
-        static constexpr TickType_t I2C_DELAY_MS = 5 / portTICK_PERIOD_MS;
-        static constexpr TickType_t I2C_INIT_DELAY_MS = 250 / portTICK_PERIOD_MS;
+        static constexpr uint32_t I2C_DELAY_MS = 5 / portTICK_PERIOD_MS;
+        static constexpr uint32_t I2C_INIT_DELAY_MS = 250 / portTICK_PERIOD_MS;
         static constexpr uint16_t MAX_SAMPLES = 100;
 
         /**
