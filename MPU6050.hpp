@@ -8,7 +8,7 @@
 #define MPU6050_PWR_MGMT_1_REG 0x6B
 
 // Add clamp function for C++11 compatibility
-#ifndef EPOXY_DUINO
+#ifdef EPOXY_DUINO
     template<class T>
     constexpr const T& clamp(const T& v, const T& lo, const T& hi) {
         return (v < lo) ? lo : (hi < v) ? hi : v;
