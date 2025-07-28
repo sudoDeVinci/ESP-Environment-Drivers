@@ -52,7 +52,8 @@ class I2CSensor {
         uint16_t getMaxSamples(void) const { return MAX_SAMPLES; }
         bool isInitialized(void) const { return _is_initialized; }
         void setWire(TwoWire* wire) { _wire = wire; }
-    
+        void setInitialized(bool initialized) { _is_initialized = initialized; }
+
     protected:
 
         I2CSensor(

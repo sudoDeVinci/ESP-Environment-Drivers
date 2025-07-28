@@ -163,12 +163,12 @@ bool I2CManager::unregisterSensor(I2CSensor& sensor) {
 /**
  * @brief Clears all registered sensors and resets the bus information.
  */
-void clear() {
+void I2CManager::clear() {
     for (auto& iter : _buses) {
         BusInfo& bus = iter.second;
         for (auto& sensor : bus.devices) {
             sensor->setWire(nullptr);
-            sensor->_is_initialized = false;
+            sensor->setInitialized(false);
         }
 
         bus.devices.clear();
