@@ -32,8 +32,10 @@ test(I2CManager_Singleton) {
 }
 
 test(I2CManager_RegisterSensor_Success) {
+
     MockSensor sensor(0x48, 0, 21, 22, 100000, 400000);
     I2CManager& manager = I2CManager::getInstance();
+    manager.clear();
     
     bool result = manager.registerSensor(sensor);
     assertTrue(result);
@@ -42,7 +44,7 @@ test(I2CManager_RegisterSensor_Success) {
 
 test(I2CManager_RegisterSensor_AddressConflict) {
     MockSensor sensor1(0x48, 0, 21, 22, 100000, 400000);
-    MockSensor sensor2(0x48, 0, 21, 22, 100000, 400000); // Same address
+    MockSensor sensor2(0x48, 0, 21, 22, 100000, 400000);
     
     I2CManager& manager = I2CManager::getInstance();
     
@@ -51,32 +53,35 @@ test(I2CManager_RegisterSensor_AddressConflict) {
 }
 
 test(I2CManager_RegisterSensor_PinMismatch) {
-    MockSensor sensor1(0x48, 0, 21, 22, 100000, 400000);
-    MockSensor sensor2(0x49, 0, 19, 20, 100000, 400000); // Different pins
-    
     I2CManager& manager = I2CManager::getInstance();
+    manager.clear();
+
+    MockSensor sensor1(0x48, 0, 21, 22, 100000, 400000);
+    MockSensor sensor2(0x49, 0, 19, 20, 100000, 400000);
     
     assertTrue(manager.registerSensor(sensor1));
     assertFalse(manager.registerSensor(sensor2)); // Should fail due to pin mismatch
 }
 
 test(I2CManager_ClockNegotiation) {
+    I2CManager& manager = I2CManager::getInstance();
+    manager.clear();
+
     MockSensor fastSensor(0x48, 1, 21, 22, 100000, 1000000);   // 1MHz max
     MockSensor slowSensor(0x49, 1, 21, 22, 50000, 400000);     // 400kHz max
     
-    I2CManager& manager = I2CManager::getInstance();
-    
     assertTrue(manager.registerSensor(fastSensor));
     assertTrue(manager.registerSensor(slowSensor));
-    
+
     // Clock should be negotiated to the slower sensor's max (400kHz)
 }
 
 test(I2CManager_ClockTooSlow) {
+    I2CManager& manager = I2CManager::getInstance();
+    manager.clear();
+
     MockSensor fastSensor(0x48, 1, 19, 20, 500000, 1000000);   // Needs at least 500kHz
     MockSensor slowSensor(0x49, 1, 19, 20, 50000, 300000);     // Max 300kHz
-    
-    I2CManager& manager = I2CManager::getInstance();
     
     assertTrue(manager.registerSensor(slowSensor));
     assertFalse(manager.registerSensor(fastSensor)); // Should fail - clock too slow
