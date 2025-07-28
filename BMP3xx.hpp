@@ -16,4 +16,4 @@ enum REGISTERS {
     CHIP_ID = 0x00,
     ERR = 0x02,
     SENS_STATUS = 0x03
-}
+};

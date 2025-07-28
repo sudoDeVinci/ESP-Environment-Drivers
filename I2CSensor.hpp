@@ -85,7 +85,10 @@ class I2CSensor {
         
         static const uint16_t MAX_SAMPLES = 100;
         
-        // Use conditional compilation for delay values
+        /**
+         * AUnit doesn't have RTOS functions so we give whatever values we want here.
+         * These technically don't matter for testing.
+         */
         #ifdef EPOXY_DUINO
             static constexpr uint32_t I2C_DELAY_MS = 5;
             static constexpr uint32_t I2C_INIT_DELAY_MS = 250;
@@ -343,5 +346,5 @@ class I2CSensor {
         }
     };
 
-// Define the static constexpr member outside the class for C++11 compatibility
+
 inline constexpr std::chrono::milliseconds I2CSensor::I2C_TIMEOUT_MS;

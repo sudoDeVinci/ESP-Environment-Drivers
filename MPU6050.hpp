@@ -7,8 +7,12 @@
 #define MPU6050_WHO_AM_I_REG 0x75
 #define MPU6050_PWR_MGMT_1_REG 0x6B
 
-// Add clamp function for C++11 compatibility
+
 #ifdef EPOXY_DUINO
+    /**
+     * std::clamp doesn't exist before cpp17, so we may not have it.
+     * the STL is also still lacking for AUnit right now - drop in replacement.
+     */
     template<class T>
     constexpr const T& clamp(const T& v, const T& lo, const T& hi) {
         return (v < lo) ? lo : (hi < v) ? hi : v;

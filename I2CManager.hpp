@@ -4,9 +4,10 @@
 #include <vector>
 #include <map>
 
-// Handle ESP32 vs test environment differences
+/**
+ * AUnit doesn't have RTOS functionality, so we swap for regular arduino functions.
+ */
 #ifdef EPOXY_DUINO
-    // For EpoxyDuino tests - use standard delay
     #include "Arduino.h"
     #define vTaskDelay(x) delay(x)
     #define portTICK_PERIOD_MS 1

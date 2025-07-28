@@ -16,6 +16,7 @@ bool I2CManager::registerSensor(I2CSensor& sensor) {
         bus_info.sda_pin = sensor.getSdaPin();
         bus_info.scl_pin = sensor.getSclPin();
         
+        // TwoWire templates are different across AVR and ESP32 lib
         #ifdef EPOXY_DUINO
             // EpoxyDuino's TwoWire doesn't take pin parameters
             bus_info.wire->begin();
@@ -96,8 +97,8 @@ bool I2CManager::registerSensor(I2CSensor& sensor) {
      * 4. Set the wire on the sensor.
      */
 
+    // No need to set clock in testing.
     #ifndef EPOXY_DUINO
-        // Set clock speed on ESP32
         bus_info.wire->setClock(new_potential_clock);
     #endif
     bus_info.current_clock = new_potential_clock;
