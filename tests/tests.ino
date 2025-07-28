@@ -1,4 +1,6 @@
-#include "AUnit.h"
+#ifdef EPOXY_DUINO
+    #include "AUnit.h"
+#endif
 
 void setup() {
     Serial.begin(115200);
@@ -7,6 +9,9 @@ void setup() {
     Serial.println("Running ESP Environment Drivers Tests...");
 }
 
-void loop() {
-    aunit::TestRunner::run();
-}
+
+#ifdef EPOXY_DUINO
+    void loop() {aunit::TestRunner::run();}
+#else
+    void loop () {}
+#endif
