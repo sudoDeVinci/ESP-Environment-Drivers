@@ -65,11 +65,11 @@ class MPU6050 : public I2CSensor {
          * Mapping of LSB sensitivity values to their corresponding sensitivity factors.
          * This is used to convert raw gyro readings into meaningful values.
          */
-        static const std::unordered_map<LSB_SENSITIVITY, float> LSB_MAP = {
-            {LSB_SENSITIVITY::LSB_131P0, 131.0f},
-            {LSB_SENSITIVITY::LSB_65P5, 65.5f},
-            {LSB_SENSITIVITY::LSB_32P8, 32.8f},
-            {LSB_SENSITIVITY::LSB_16P4, 16.4f}
+        static constexpr std::unordered_map<LSB_SENSITIVITY, float> LSB_MAP = {
+            {LSB_SENSITIVITY::LSB_131P0, 131.00f},
+            {LSB_SENSITIVITY::LSB_65P5, 65.50f},
+            {LSB_SENSITIVITY::LSB_32P8, 32.80f},
+            {LSB_SENSITIVITY::LSB_16P4, 16.40f}
         };
 
         bool deviceSpecificSetup() override {
