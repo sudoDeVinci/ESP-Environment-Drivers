@@ -1,3 +1,5 @@
+#ifdef EPOXY_DUINO
+
 #include <AUnit.h>
 #include "../MPU6050.hpp"
 
@@ -40,3 +42,5 @@ test(MPU6050_ReadGyro_NotInitialized) {
     assertEqual(reading[1], 0.0f);
     assertEqual(reading[2], 0.0f);
 }
+
+#end

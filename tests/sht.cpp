@@ -1,3 +1,5 @@
+#ifdef EPOXY_DUINO
+
 #include <AUnit.h>
 #include "../SHT31D.hpp"
 
@@ -32,3 +34,5 @@ test(SHT31D_EnumValues) {
     assertEqual(static_cast<uint16_t>(MEDREP), 0x2C0B);
     assertEqual(static_cast<uint16_t>(HIGHREP), 0x2400);
 }
+
+#endif

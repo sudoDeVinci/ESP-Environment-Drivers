@@ -1,3 +1,5 @@
+#ifdef EPOXY_DUINO
+
 #include <AUnit.h>
 #include "../I2CManager.hpp"
 #include "../I2CSensor.hpp"
@@ -79,3 +81,5 @@ test(I2CManager_ClockTooSlow) {
     assertTrue(manager.registerSensor(slowSensor));
     assertFalse(manager.registerSensor(fastSensor)); // Should fail - clock too slow
 }
+
+#endif

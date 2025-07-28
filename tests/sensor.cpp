@@ -1,3 +1,5 @@
+#ifdef EPOXY_DUINO
+
 #include <AUnit.h>
 #include "../I2CSensor.hpp"
 #include <cmath> 
@@ -72,3 +74,5 @@ test(I2CSensor_CRC8) {
     uint8_t result = sensor.testCrc8(data, 2);
     assertEqual(result, 0x81); // Known CRC8 result for {0x00, 0x00}
 }
+
+#endif
