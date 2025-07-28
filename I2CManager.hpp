@@ -40,7 +40,9 @@ private:
     std::map<int, BusInfo> _buses;
     
     I2CManager() {
-        _buses[0].wire = &TwoWire(0);
-        _buses[1].wire = &TwoWire(1);
+        TwoWire w0 = TwoWire(0);
+        TwoWire w1 = TwoWire(1);
+        _buses[0].wire = &w0;
+        _buses[1].wire = &w1;
     }
 };
