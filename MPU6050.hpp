@@ -167,7 +167,7 @@ class MPU6050 : public I2CSensor {
          * @return An averaged MPU_XYZ containing the mean values for each axis.
          */
         MPU_XYZ readGyroSampled(uint16_t samples = MAX_SAMPLES) const {
-            #ifdef EPOXY_DUINO
+            #ifndef EPOXY_DUINO
                 samples = std::clamp(samples, (uint16_t)30, MAX_SAMPLES);
             #else
                 samples = samples > MAX_SAMPLES ? MAX_SAMPLES : samples;
