@@ -52,25 +52,18 @@ enum MPU6050_REG {
     GYRO_ZOUT_L = 0x48
 };
 
+
 using MPU_XYZ = std::array<float, 3>;
 
 class MPU6050 : public I2CSensor {
+    private:
+        static const std::unordered_map<LSB_SENSITIVITY, float> LSB_MAP;
     protected:
     
         DLPF_CFG filter;
         float sensitivity;
         MPU_XYZ lastGyro;
         MPU_XYZ gyroOffsets = {0.0f, 0.0f, 0.0f};
-        /**
-         * Mapping of LSB sensitivity values to their corresponding sensitivity factors.
-         * This is used to convert raw gyro readings into meaningful values.
-         */
-        static constexpr std::unordered_map<LSB_SENSITIVITY, float> LSB_MAP = {
-            {LSB_SENSITIVITY::LSB_131P0, 131.00f},
-            {LSB_SENSITIVITY::LSB_65P5, 65.50f},
-            {LSB_SENSITIVITY::LSB_32P8, 32.80f},
-            {LSB_SENSITIVITY::LSB_16P4, 16.40f}
-        };
 
         bool deviceSpecificSetup() override {
             powerOn();
@@ -205,4 +198,16 @@ class MPU6050 : public I2CSensor {
 
             return filteredGyro;
         }
+};
+
+
+/**
+ * Mapping of LSB sensitivity values to their corresponding sensitivity factors.
+ * This is used to convert raw gyro readings into meaningful values.
+ */
+const std::unordered_map<LSB_SENSITIVITY, float> MPU6050::LSB_MAP = {
+    {LSB_SENSITIVITY::LSB_131P0, 131.00f},
+    {LSB_SENSITIVITY::LSB_65P5, 65.50f},
+    {LSB_SENSITIVITY::LSB_32P8, 32.80f},
+    {LSB_SENSITIVITY::LSB_16P4, 16.40f}
 };
