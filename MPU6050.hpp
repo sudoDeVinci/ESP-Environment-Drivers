@@ -56,8 +56,7 @@ enum MPU6050_REG {
 using MPU_XYZ = std::array<float, 3>;
 
 class MPU6050 : public I2CSensor {
-    private:
-        static const std::unordered_map<LSB_SENSITIVITY, float> LSB_MAP;
+    
     protected:
     
         DLPF_CFG filter;
@@ -74,6 +73,8 @@ class MPU6050 : public I2CSensor {
 
 
     public:
+
+        static const std::unordered_map<LSB_SENSITIVITY, float> LSB_MAP;
 
         MPU6050(
             uint8_t bus_num,

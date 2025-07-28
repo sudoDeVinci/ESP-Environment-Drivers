@@ -25,10 +25,10 @@ test(MPU6050_EnumValues) {
 
 test(MPU6050_LSBMapping) {
     // Test that LSB_MAP contains correct sensitivity values
-    assertEqual(LSB_MAP.at(LSB_131P0), 131.0f);
-    assertEqual(LSB_MAP.at(LSB_65P5), 65.5f);
-    assertEqual(LSB_MAP.at(LSB_32P8), 32.8f);
-    assertEqual(LSB_MAP.at(LSB_16P4), 16.4f);
+    assertEqual(MPU6050::LSB_MAP.at(LSB_131P0), 131.0f);
+    assertEqual(MPU6050::LSB_MAP.at(LSB_65P5), 65.5f);
+    assertEqual(MPU6050::LSB_MAP.at(LSB_32P8), 32.8f);
+    assertEqual(MPU6050::LSB_MAP.at(LSB_16P4), 16.4f);
 }
 
 test(MPU6050_ReadGyro_NotInitialized) {
