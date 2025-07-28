@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FreeRTOS.h"
+#include "freertos/FreeRTOS.h"
 #include <Wire.h>
 #include "I2CManager.hpp"
 #include <array>
