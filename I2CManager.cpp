@@ -160,3 +160,25 @@ bool I2CManager::unregisterSensor(I2CSensor& sensor) {
     return true;
 }
 
+/**
+ * @brief Clears all registered sensors and resets the bus information.
+ */
+void clear() {
+    for (auto& iter : _buses) {
+        BusInfo& bus = iter.second;
+        for (auto& sensor : bus.devices) {
+            sensor->setWire(nullptr);
+            sensor->_is_initialized = false;
+        }
+
+        bus.devices.clear();
+        bus.is_initialized = false;
+        bus.sda_pin = -1;
+        bus.scl_pin = -1;
+        bus.current_clock = 0;
+
+        #ifndef EPOXY_DUINO
+        bus.wire->end();
+        #endif
+    }
+}

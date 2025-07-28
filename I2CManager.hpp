@@ -89,26 +89,7 @@ public:
     /**
      * @brief Clears all registered sensors and resets the bus information.
      */
-    void clear() {
-        for (auto& [number, bus] : _buses) {
-
-            for (auto& sensor : bus.devices) {
-                sensor->setWire(nullptr);
-                sensor->_is_initialized = false;
-            }
-
-            bus.devices.clear();
-            bus.is_initialized = false;
-            bus.sda_pin = -1;
-            bus.scl_pin = -1;
-            bus.current_clock = 0;
-
-            #ifndef EPOXY_DUINO
-            bus.wire->end();
-            #endif
-        }
-        return true;
-    }
+    void clear();
 
 
 private:
