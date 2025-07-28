@@ -14,6 +14,10 @@
 using UniqueTimedMutex = std::unique_lock<std::timed_mutex>;
 
 
+/**
+ * Base class for I2C sensors.
+ * This class provides common functionality for I2C sensors, including initialization and communication methods.
+ */
 class I2CSensor {
     public:
 

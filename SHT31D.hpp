@@ -37,6 +37,9 @@ enum MEASUREMENT_MODE {
     HIGHREP_STRETCH = 0x2C06, 
 };
 
+/**
+ * SHT31 class for interfacing with the SHT31D temperature and humidity sensor.
+ */
 struct SHT31 : public I2CSensor {
     protected:
         /**Internal humidity rep. */

@@ -1,5 +1,6 @@
-#include "I2CSensor.hpp"
 #include "MPU6050.hpp"
+#include "SHT31D.hpp"
+#include "BMP3xx.hpp"
 
 
 #define I2C_BUS_0_SDA 21
@@ -12,17 +13,12 @@ MPU6050 mpu(0, I2C_BUS_0_SDA, I2C_BUS_0_SCL);
 void setup() {
     Serial.begin(115200);
     
-    // Register the sensor with the I2C manager
     if (!mpu.init()) {
         Serial.println("Failed to initialize MPU6050!");
-        // Halt execution or enter an error state
         while (1) { delay(1000); }
     } else {
         Serial.println("MPU6050 initialized successfully.");
     }
-
-    // Additional setup code for your application ...
-
 }
 
 void loop() {
