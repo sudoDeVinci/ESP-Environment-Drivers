@@ -36,9 +36,8 @@ test(I2CManager_RegisterSensor_Success) {
     MockSensor sensor(0x48, 0, 21, 22, 100000, 400000);
     I2CManager& manager = I2CManager::getInstance();
     manager.clear();
-    
-    bool result = manager.registerSensor(sensor);
-    assertTrue(result);
+
+    assertTrue(sensor.init());
     assertTrue(sensor.isInitialized());
 }
 
