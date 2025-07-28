@@ -81,7 +81,7 @@ class I2CSensor {
         uint32_t _min_clock_hz;
         uint32_t _max_clock_hz;
         mutable std::timed_mutex _i2cMutex;
-        static const std::chrono::milliseconds I2C_TIMEOUT_MS;
+        static const std::chrono::milliseconds I2C_TIMEOUT_MS = std::chrono::milliseconds(100);
         static const uint16_t MAX_SAMPLES = 100;
         
         // Use conditional compilation for delay values
@@ -341,5 +341,3 @@ class I2CSensor {
             return filtered;
         }
     };
-
-const std::chrono::milliseconds I2CSensor::I2C_TIMEOUT_MS = std::chrono::milliseconds(100);
