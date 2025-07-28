@@ -12,6 +12,9 @@ CPPFLAGS += -DEPOXY_DUINO
 # Add AUnit library
 CPPFLAGS += -I$(AUNIT_DIR)/src
 
+# Override the default .ino file with .cpp
+MAIN_CPP := main.cpp
+
 # Add only.cpp source files here
 OBJS += ../I2CManager.o
 

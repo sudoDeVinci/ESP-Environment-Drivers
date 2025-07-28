@@ -1,6 +1,7 @@
 #include <AUnit.h>
 #include "../I2CManager.hpp"
 #include "../I2CSensor.hpp"
+#include <cstdint>
 
 // Mock sensor class for testing
 class MockSensor : public I2CSensor {

@@ -1,5 +1,6 @@
 #include <AUnit.h>
 #include "../I2CSensor.hpp"
+#include <cmath> 
 
 // Test sensor to access protected utility functions
 class TestUtilsSensor : public I2CSensor {
