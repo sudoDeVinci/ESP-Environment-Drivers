@@ -1,5 +1,6 @@
 #include "I2CManager.hpp"
 #include "I2CSensor.hpp"
+#include <algorithm>
 
 bool I2CManager::registerSensor(I2CSensor& sensor) {
     uint8_t bus_num = sensor.getBusNum();
@@ -14,25 +15,22 @@ bool I2CManager::registerSensor(I2CSensor& sensor) {
     if (!bus_info.is_initialized) {
         bus_info.sda_pin = sensor.getSdaPin();
         bus_info.scl_pin = sensor.getSclPin();
-        bus_info.wire->begin(bus_info.sda_pin, bus_info.scl_pin);
+        
+        #ifdef EPOXY_DUINO
+            // EpoxyDuino's TwoWire doesn't take pin parameters
+            bus_info.wire->begin();
+        #else
+            // ESP32's TwoWire takes SDA/SCL pins
+            bus_info.wire->begin(bus_info.sda_pin, bus_info.scl_pin);
+        #endif
+        
         bus_info.is_initialized = true;
     }
 
-    /**
-     * Now technically, if the bus was never initialized, and this sensor
-     * is the first one, the following checks would be redundant.
-     * However, there may be a case where the bus was perhaps ended
-     * and re-initialized, whereby there are still sensors registered.
-     */
-
-
-     /**
-      * Check if the sensor is on the right pins being used by the bus
-      * it is being registered to - if not, return false.
-      */
-    if (sensor.getSdaPin() != bus_info.sda_pin || sensor.getSclPin() != bus_info.scl_pin) {
-        // debug serial print: "Sensor pins do not match bus pins"
-        return false;
+    // Check if the sensor is on the right pins being used by the bus
+    if (bus_info.sda_pin != sensor.getSdaPin() || 
+        bus_info.scl_pin != sensor.getSclPin()) {
+        return false; // Pin mismatch
     }
 
     /**
@@ -63,8 +61,8 @@ bool I2CManager::registerSensor(I2CSensor& sensor) {
     for (const I2CSensor* existing_sensor : bus_info.devices) {
         if (new_potential_clock > existing_sensor->getMaxClock()) {
             new_potential_clock = existing_sensor->getMaxClock();
-        }
-
+    }
+    
     }
 
 
@@ -75,13 +73,13 @@ bool I2CManager::registerSensor(I2CSensor& sensor) {
         bus_info.devices.cbegin(),
         bus_info.devices.cend(),
         [&new_potential_clock](const I2CSensor* existing_sensor) {
-            return new_potential_clock < existing_sensor->getMinClock();
+        return new_potential_clock < existing_sensor->getMinClock();
         }
     )){
         // debug serial print: "Sensor address conflict"
         return false;
     }
-
+    
     /**
      * Check if the new potential clock speed is within the sensor's limits.
      */
@@ -97,10 +95,14 @@ bool I2CManager::registerSensor(I2CSensor& sensor) {
      * 3. Add the sensor to the bus's device list.
      * 4. Set the wire on the sensor.
      */
-    bus_info.wire->setClock(new_potential_clock);
+
+    #ifndef EPOXY_DUINO
+        // Set clock speed on ESP32
+        bus_info.wire->setClock(new_potential_clock);
+    #endif
     bus_info.current_clock = new_potential_clock;
     bus_info.devices.push_back(&sensor);
     sensor.setWire(bus_info.wire);
 
     return true;
-};
+}
