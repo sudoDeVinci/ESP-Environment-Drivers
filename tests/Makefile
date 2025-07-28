@@ -16,7 +16,7 @@ CPPFLAGS += -I$(AUNIT_DIR)/src
 OBJS += ../I2CManager.o
 
 # Include all test files
-OBJS += tests.o
+OBJS += main.o
 OBJS += sensorManager.o
 OBJS += sensor.o
 OBJS += mpu.o
