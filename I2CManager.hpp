@@ -7,6 +7,7 @@
 // Handle ESP32 vs test environment differences
 #ifdef EPOXY_DUINO
     // For EpoxyDuino tests - use standard delay
+    #include "Arduino.h"
     #define vTaskDelay(x) delay(x)
     #define portTICK_PERIOD_MS 1
 #else
