@@ -20,6 +20,11 @@
 // Forward declaration to avoid circular dependency
 class I2CSensor;
 
+/**
+ * Structure to hold information about an I2C bus.
+ * Contains the state of the bus, pins used, current clock speed,
+ * and a list of registered devices.
+ */
 struct BusInfo {
     bool is_initialized = false;
     int sda_pin = -1;
@@ -31,22 +36,79 @@ struct BusInfo {
 
 class I2CManager {
 public:
-    // Get the singleton instance
+
+    /**
+     * @brief Singleton instance getter for I2CManager.
+     * @return Reference to the singleton instance of I2CManager.
+     */
+    [[nodiscard]]
     static I2CManager& getInstance() {
         static I2CManager instance;
         return instance;
     }
 
-    // Deleted copy and assignment operators to preserve singleton property
+    /**
+     * @brief Deleted copy constructor and assignment operator to prevent copying.
+     */
     I2CManager(I2CManager const&) = delete;
+
+    /**
+     * @brief Deleted assignment operator to prevent assignment.
+     */
     void operator=(I2CManager const&) = delete;
+
+    /**
+     * @brief Returns the number of devices registered on a specific bus.
+     * @param bus_num The bus number to check.
+     * @return The number of devices on the bus, or 0 if the bus does
+     */
+    uint8_t deviceCount(int bus_num) const {
+        auto it = _buses.find(bus_num);
+        if (it != _buses.end()) {
+            return it->second.devices.size();
+        }
+        return 0;
+    }
 
     /**
      * @brief Registers a sensor with the manager.
      * @param sensor Ref to the sensor instance.
      * @return True if registration is successful, false otherwise.
      */
+    [[nodiscard]]
     bool registerSensor(I2CSensor& sensor);
+
+    /**
+     * @brief Unregisters a sensor from the manager.
+     * @param sensor Ref to the sensor instance.
+     * @return True if unregistration is successful, false otherwise.
+     */
+    [[nodiscard]]
+    bool unregisterSensor(I2CSensor& sensor);
+
+    /**
+     * @brief Clears all registered sensors and resets the bus information.
+     */
+    void clear() {
+        for (auto& [number, bus] : _buses) {
+
+            for (auto& sensor : bus.devices) {
+                sensor->setWire(nullptr);
+                sensor->_is_initialized = false;
+            }
+
+            bus.devices.clear();
+            bus.is_initialized = false;
+            bus.sda_pin = -1;
+            bus.scl_pin = -1;
+            bus.current_clock = 0;
+
+            #ifndef EPOXY_DUINO
+            bus.wire->end();
+            #endif
+        }
+        return true;
+    }
 
 
 private:

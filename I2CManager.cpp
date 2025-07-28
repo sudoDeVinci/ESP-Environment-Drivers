@@ -2,6 +2,12 @@
 #include "I2CSensor.hpp"
 #include <algorithm>
 
+/**
+ * @brief Registers a sensor with the manager.
+ * @param sensor Ref to the sensor instance.
+ * @return True if registration is successful, false otherwise.
+ */
+[[nodiscard]]
 bool I2CManager::registerSensor(I2CSensor& sensor) {
     uint8_t bus_num = sensor.getBusNum();
     if (_buses.find(bus_num) == _buses.end()) {
@@ -107,3 +113,50 @@ bool I2CManager::registerSensor(I2CSensor& sensor) {
 
     return true;
 }
+
+
+/**
+ * @brief Unregisters a sensor from the manager.
+ * @param sensor Ref to the sensor instance.
+ * @return True if unregistration is successful, false otherwise.
+ */
+[[nodiscard]]
+bool I2CManager::unregisterSensor(I2CSensor& sensor) {
+    
+    uint8_t bus_num = sensor.getBusNum();
+    auto busit = _buses.find(bus_num);
+
+    if (busit == _buses.end()) {
+        // debug serial print: "Bus not found"
+        return false;
+    }
+
+    BusInfo& bus_info = busit->second;
+
+    auto it = std::find(
+        bus_info.devices.begin(),
+        bus_info.devices.end(),
+        &sensor
+    );
+
+    if (it == bus_info.devices.end()) {
+        // debug serial print: "Sensor not found on the bus"
+        return false;
+    }
+
+    bus_info.devices.erase(it);
+
+    // If no devices left, reset the bus info
+    if (bus_info.devices.empty()) {
+        bus_info.is_initialized = false;
+        bus_info.sda_pin = -1;
+        bus_info.scl_pin = -1;
+        bus_info.current_clock = 0;
+
+        #ifndef EPOXY_DUINO
+        bus_info.wire->end();
+        #endif
+    }
+    return true;
+}
+
