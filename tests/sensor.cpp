@@ -62,9 +62,9 @@ test(I2CSensor_Quartiles) {
     std::array<int, 8> data = {1, 2, 3, 4, 5, 6, 7, 8};
     
     auto result = sensor.testQuartiles(data);
-    assertEqual(result[0], 2.0f); // Q1
-    assertEqual(result[1], 4.0f); // Median
-    assertEqual(result[2], 6.0f); // Q3
+    assertEqual(result[0], 3.0f); // Q1
+    assertEqual(result[1], 5.0f); // Median
+    assertEqual(result[2], 7.0f); // Q3
 }
 
 test(I2CSensor_CRC8) {

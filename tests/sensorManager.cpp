@@ -42,13 +42,14 @@ test(I2CManager_RegisterSensor_Success) {
 }
 
 test(I2CManager_RegisterSensor_AddressConflict) {
+    I2CManager& manager = I2CManager::getInstance();
+    manager.clear();
+
     MockSensor sensor1(0x48, 0, 21, 22, 100000, 400000);
     MockSensor sensor2(0x48, 0, 21, 22, 100000, 400000);
-    
-    I2CManager& manager = I2CManager::getInstance();
-    
-    assertTrue(manager.registerSensor(sensor1));
-    assertFalse(manager.registerSensor(sensor2)); // Should fail due to address conflict
+
+    assertTrue(sensor1.init());
+    assertFalse(sensor2.init()); // Should fail due to address conflict
 }
 
 test(I2CManager_RegisterSensor_PinMismatch) {
