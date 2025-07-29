@@ -1,6 +1,7 @@
 #ifdef EPOXY_DUINO
 
 #include <AUnit.h>
+#include "../I2CManager.hpp"
 #include "../MPU6050.hpp"
 
 test(MPU6050_Construction) {
@@ -34,6 +35,9 @@ test(MPU6050_LSBMapping) {
 }
 
 test(MPU6050_ReadGyro_NotInitialized) {
+    I2CManager& manager1 = I2CManager::getInstance()
+    manager.clear();
+    
     MPU6050 mpu(0, 21, 22);
     
     // Reading gyro on uninitialized sensor should return zeros

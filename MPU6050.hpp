@@ -150,6 +150,8 @@ class MPU6050 : public I2CSensor {
          */
         MPU_XYZ readGyro() const{
             MPU_XYZ buffer = {0.0f, 0.0f, 0.0f};
+            
+            if (!this->_is_initialized) return buffer;
 
             this->writeToReg(MPU6050_REG::GYRO_XOUT_H);
 
@@ -179,6 +181,9 @@ class MPU6050 : public I2CSensor {
          * @return An averaged MPU_XYZ containing the mean values for each axis.
          */
         MPU_XYZ readGyroSampled(uint16_t samples = MAX_SAMPLES) const {
+            
+            if (!this->_is_initialized) return {0.0f, 0.0f, 0.0f};
+
             #ifndef EPOXY_DUINO
                 samples = std::clamp(samples, (uint16_t)30, MAX_SAMPLES);
             #else
