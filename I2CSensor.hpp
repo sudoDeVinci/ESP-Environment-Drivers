@@ -110,7 +110,7 @@ class I2CSensor {
 
 
         /**
-         * Writes a single byte to the specified register.
+         * @brief Writes a single byte to the specified register.
          * @param reg The register address to write to.
          * @param value The byte value to write.
          */
@@ -128,8 +128,7 @@ class I2CSensor {
         }
 
         /**
-         * Writes a single byte to the specified register without any values.
-         * This is useful for operations that only require a register address.
+         * @brief Writes a single byte to the specified register without any values.
          * @param reg The register address to write to.
          */
         void writeToReg(uint8_t reg) const {
@@ -145,8 +144,7 @@ class I2CSensor {
         }
         
         /**
-         * Writes a command to the sensor.
-         * The command is a 16-bit value split into two bytes.
+         * @brief Writes a command to the sensor.
          * @param cmd The command to write, represented as a 16-bit unsigned integer.
          */
         void writeCommand(uint16_t cmd) const {
