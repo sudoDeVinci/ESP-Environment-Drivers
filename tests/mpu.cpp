@@ -35,7 +35,7 @@ test(MPU6050_LSBMapping) {
 }
 
 test(MPU6050_ReadGyro_NotInitialized) {
-    I2CManager& manager1 = I2CManager::getInstance()
+    I2CManager& manager1 = I2CManager::getInstance();
     manager.clear();
     
     MPU6050 mpu(0, 21, 22);
