@@ -118,12 +118,12 @@ namespace BMP3 {
     };
 
     enum class BMP3_INT_PIN : uint8_t {
-        OPEN_DRAIN = 0x01,
-        PUSH_PULL = 0x00,
+        OPEN_DRAIN_MODE = 0x01,
+        PUSH_PULL_MODE = 0x00,
         ACTIVE_HIGH = 0x01,
         ACTIVE_LOW = 0x00,
-        LATCH = 0x01,
-        NON_LATCH = 0x00
+        LATCH_MODE = 0x01,
+        NON_LATCH_MODE = 0x00
     };
 
     enum class BMP3_FIFO_SUBSAMPLING : uint8_t {
@@ -218,7 +218,7 @@ namespace BMP3 {
         PRESS_EN = 1<<4,
         TEMP_EN = 1<<5,
         DOWN_SAMPLING = 1<<6,
-        FILTER_EN = 1<<7,
+        FILTER_EN_MODE = 1<<7,
         FWTM_EN = 1<<8,
         FULL_EN = 1<<9
     };
