@@ -5,6 +5,20 @@
  * The adafruit BMP3xx library @ https://github.com/adafruit/Adafruit_BMP3XX/blob/master/bmp3_defs.h
  */
 
+ /**
+ * BMP3_INTF_RET_TYPE is the read/write interface return type which can be overwritten by the build system.
+ */
+#ifndef BMP3_INTF_RET_TYPE
+#define BMP3_INTF_RET_TYPE                      int8_t
+#endif
+
+/**
+ * The last error code from read/write interface is stored in the device structure as intf_rslt.
+ */
+#ifndef BMP3_INTF_RET_SUCCESS
+#define BMP3_INTF_RET_SUCCESS                   int8_t(0)
+#endif
+
 /**Primary i2c address */
 #define BMP3_ADDR_PRIM                          uint8_t(0x76)
 /**Secondary i2c address */
@@ -354,6 +368,62 @@ namespace BMP3 {
     };
 }
 
+/*!
+ * @brief Interface selection Enums
+ * Deprecated since we only use I2C.
+ * This enum is kept for compatibility with existing code.
+ */
+enum class bmp3_intf {
+    /*! SPI interface */
+    BMP3_SPI_INTF,
+    /*! I2C interface */
+    BMP3_I2C_INTF
+};
+
+/*!
+ * @brief Type definitions
+ */
+
+/*!
+ * @brief Bus communication function pointer which should be mapped to
+ * the platform specific read functions of the user
+ *
+ * @param[in]     reg_addr : 8bit register address of the sensor
+ * @param[out]    reg_data : Data from the specified address
+ * @param[in]     length   : Length of the reg_data array
+ * @param[in,out] intf_ptr : Void pointer that can enable the linking of descriptors
+ *                           for interface related callbacks
+ * @retval 0 for Success
+ * @retval Non-zero for Failure
+ */
+typedef BMP3_INTF_RET_TYPE (*bmp3_read_fptr_t)(uint8_t reg_addr, uint8_t *read_data, uint32_t len, void *intf_ptr);
+
+/*!
+ * @brief Bus communication function pointer which should be mapped to
+ * the platform specific write functions of the user
+ *
+ * @param[in]     reg_addr : 8bit register address of the sensor
+ * @param[out]    reg_data : Data to the specified address
+ * @param[in]     length   : Length of the reg_data array
+ * @param[in,out] intf_ptr : Void pointer that can enable the linking of descriptors
+ *                           for interface related callbacks
+ * @retval 0 for Success
+ * @retval Non-zero for Failure
+ *
+ */
+typedef BMP3_INTF_RET_TYPE (*bmp3_write_fptr_t)(uint8_t reg_addr, const uint8_t *read_data, uint32_t len,
+                                                void *intf_ptr);
+
+/*!
+ * @brief Delay function pointer which should be mapped to
+ * delay function of the user
+ *
+ * @param[in] period              : Delay in microseconds.
+ * @param[in, out] intf_ptr       : Void pointer that can enable the linking of descriptors
+ *                                  for interface related call backs
+ *
+ */
+typedef void (*bmp3_delay_us_fptr_t)(uint32_t period, void *intf_ptr);
 
 /*!
  * @brief Register Trim Variables
