@@ -104,6 +104,13 @@ make EPOXY_DUINO_DIR=../EpoxyDuino AUNIT_DIR=../AUnit
 - [AUnit](https://github.com/bxparks/AUnit) - Unit testing framework
 - [EpoxyDuino](https://github.com/bxparks/EpoxyDuino) - Arduino emulation for native testing
 
+
+## Ideas / TODOs
+- [ ] An 'updateTimespan' attr within the sensors which update internal values. If the timespan has passed, grab new values. If the value hasn't passed, read the same. This would be good for sensors which we use the average of a range of readings, potentially saving a large number of calculations.
+
+
 ## License
 
 This project is licensed under the Business Source License. See [LICENSE](LICENSE) for details.
+
+

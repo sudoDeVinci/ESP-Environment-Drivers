@@ -39,7 +39,7 @@ class I2CSensor {
        /**
         * Pure virtual function to be implemented by derived sensor classes.
         * This function is called periodically to update the sensor's readings.
-        * Only some sensors do this - other returnthe reading on demand.
+        * Only some sensors do this - other return the reading on demand.
         */
         virtual bool update(void) = 0;
     
@@ -171,7 +171,7 @@ class I2CSensor {
          * @param len   The number of bytes in 'data'.
          * @return The computed CRC8 value.
          */
-        uint8_t crc8(const uint8_t *data, int len) const {
+        static uint8_t crc8(const uint8_t *data, int len) const {
             const uint8_t POLYNOMIAL(0x31);
             uint8_t crc(0xFF);
 

@@ -1,5 +1,4 @@
-#ifndef SHT31D_H
-#define SHT31D_H
+#pragma once
 
 #include "I2CSensor.hpp"
 #include <Wire.h>
@@ -41,7 +40,10 @@ enum MEASUREMENT_MODE {
  * SHT31 class for interfacing with the SHT31D temperature and humidity sensor.
  */
 struct SHT31 : public I2CSensor {
+
     protected:
+        /**Whether the heater is enabled or not. */
+        bool heaterEnabled;
         /**Internal humidity rep. */
         float humidity;
         /**Internal temperature rep. */
@@ -77,7 +79,8 @@ struct SHT31 : public I2CSensor {
          * Enables the heater of the SHT31 sensor.
          * This method sends a command to turn on the heater.
          */
-        void enableHeater(void) const {
+        void enableHeater(void) {
+            this -> heaterEnabled = true;
             writeCommand(HEATER_ON);
         }
 
@@ -85,8 +88,9 @@ struct SHT31 : public I2CSensor {
          * Disables the heater of the SHT31 sensor.
          * This method sends a command to turn off the heater.
          */
-        void disableHeater(void) const {
+        void disableHeater(void) {
             writeCommand(HEATER_OFF);
+            this -> heaterEnabled = false;
         }
 
         /**
@@ -121,7 +125,7 @@ struct SHT31 : public I2CSensor {
                     data[1] = this->_wire->read();
                     data[2] = this->_wire->read();
 
-                    if (data[2] == crc8(data, 2)) {
+                    if (data[2] == I2CSensor::crc8(data, 2)) {
                         return (uint16_t)data[0] << 8 | data[1];
                     }
                 }
@@ -137,7 +141,7 @@ struct SHT31 : public I2CSensor {
          */
         bool update(void) override {
             writeCommand(MEDREP);
-            uint8_t readbuffer[6] = {0, 0, 0, 0, 0, 0};
+            uint8_t readbuffer[6];
             vTaskDelay(20 / portTICK_PERIOD_MS);
 
             {
@@ -154,7 +158,7 @@ struct SHT31 : public I2CSensor {
                 }
             }
 
-            if (readbuffer[2] != crc8(readbuffer, 2) || readbuffer[5] != crc8(readbuffer + 3, 2)) {
+            if (readbuffer[2] != I2CSensor::crc8(readbuffer, 2) || readbuffer[5] != I2CSensor::crc8(readbuffer + 3, 2)) {
                 return false; // CRC check failed
             }
 
