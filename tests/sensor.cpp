@@ -30,7 +30,7 @@ public:
         return quartiles(arr); 
     }
     
-    uint8_t testCrc8(const uint8_t* data, int len) const { return crc8(data, len); }
+    uint8_t testCrc8(const uint8_t* data, int len) const { return I2CSensor::crc8(data, len); }
 };
 
 test(I2CSensor_Mean_Array) {
