@@ -75,7 +75,7 @@
 #define BMP3_GET_MSB(var)                       (uint8_t)((var & BMP3_SET_HIGH_BYTE) >> 8)
 
 
-enum BMP_REGS {
+enum class BMP_REGS : uint8_t {
     CHIP_ID = 0x00,
     ERR = 0x02,
     SENS_STATUS = 0x03,
@@ -97,220 +97,220 @@ enum BMP_REGS {
     CMD = 0x7E
 };
 
-enum BMP3_ERR {
-    FATAL = uint8_t(0x01),
-    CMD = uint8_t(0x02),
-    CONF = uint8_t(0x04),
+enum class BMP3_ERR : uint8_t {
+    FATAL = 0x01,
+    CMD = 0x02,
+    CONF = 0x04,
 };
 
-enum BMP3_DRDY {
-    CMD = uint8_t(0x10),
-    PRESS = uint8_t(0x20),
-    TEMP = uint8_t(0x40)
+enum class BMP3_DRDY : uint8_t {
+    CMD = 0x10,
+    PRESS = 0x20,
+    TEMP = 0x40
 };
 
-enum BMP3_MODE {
-    SLEEP = uint8_t(0x00),
-    FORCED = uint8_t(0x01),
-    NORMAL = uint8_t(0x03)
+enum class BMP3_MODE : uint8_t {
+    SLEEP = 0x00,
+    FORCED = 0x01,
+    NORMAL = 0x03
 };
 
-enum BMP3_INT_PIN {
-    OPEN_DRAIN = uint8_t(0x01),
-    PUSH_PULL = uint8_t(0x00),
-    ACTIVE_HIGH = uint8_t(0x01),
-    ACTIVE_LOW = uint8_t(0x00),
-    LATCH = uint8_t(0x01),
-    NON_LATCH = uint8_t(0x00)
+enum class BMP3_INT_PIN : uint8_t {
+    OPEN_DRAIN = 0x01,
+    PUSH_PULL = 0x00,
+    ACTIVE_HIGH = 0x01,
+    ACTIVE_LOW = 0x00,
+    LATCH = 0x01,
+    NON_LATCH = 0x00
 };
 
-enum BMP3_FIFO_SUBSAMPLING {
-    NO_SUBSAMPLING = uint8_t(0x00),
-    SUBSAMPLING_2X = uint8_t(0x01),
-    SUBSAMPLING_4X = uint8_t(0x02),
-    SUBSAMPLING_8X = uint8_t(0x03),
-    SUBSAMPLING_16X = uint8_t(0x04),
-    SUBSAMPLING_32X = uint8_t(0x05),
-    SUBSAMPLING_64X = uint8_t(0x06),
-    SUBSAMPLING_128X = uint8_t(0x07)
+enum class BMP3_FIFO_SUBSAMPLING : uint8_t {
+    NO_SUBSAMPLING = 0x00,
+    SUBSAMPLING_2X = 0x01,
+    SUBSAMPLING_4X = 0x02,
+    SUBSAMPLING_8X = 0x03,
+    SUBSAMPLING_16X = 0x04,
+    SUBSAMPLING_32X = 0x05,
+    SUBSAMPLING_64X = 0x06,
+    SUBSAMPLING_128X = 0x07
 };
 
-enum BMP3_OVERSAMPLING {
-    NO_OVERSAMPLING = uint8_t(0x00),
-    OVERSAMPLING_2X = uint8_t(0x01),
-    OVERSAMPLING_4X = uint8_t(0x02),
-    OVERSAMPLING_8X = uint8_t(0x03),
-    OVERSAMPLING_16X = uint8_t(0x04),
-    OVERSAMPLING_32X = uint8_t(0x05),
+enum class BMP3_OVERSAMPLING : uint8_t {
+    NO_OVERSAMPLING = 0x00,
+    OVERSAMPLING_2X = 0x01,
+    OVERSAMPLING_4X = 0x02,
+    OVERSAMPLING_8X = 0x03,
+    OVERSAMPLING_16X = 0x04,
+    OVERSAMPLING_32X = 0x05,
 };
 
-enum BMP3_IIR_FILTER {
-    DISABLE = uint8_t(0x00),
-    COEFF_1 = uint8_t(0x01),
-    COEFF_3 = uint8_t(0x02),
-    COEFF_7 = uint8_t(0x03),
-    COEFF_15 = uint8_t(0x04),
-    COEFF_31 = uint8_t(0x05),
-    COEFF_63 = uint8_t(0x06),
-    COEFF_127 = uint8_t(0x07)
+enum class BMP3_IIR_FILTER : uint8_t {
+    DISABLE = 0x00,
+    COEFF_1 = 0x01,
+    COEFF_3 = 0x02,
+    COEFF_7 = 0x03,
+    COEFF_15 = 0x04,
+    COEFF_31 = 0x05,
+    COEFF_63 = 0x06,
+    COEFF_127 = 0x07
 };
 
-enum BMP3_ODR {
-    ODR_200_HZ = uint8_t(0x00),
-    ODR_100_HZ = uint8_t(0x01),
-    ODR_50_HZ = uint8_t(0x02),
-    ODR_25_HZ = uint8_t(0x03),
-    ODR_12_5_HZ = uint8_t(0x04),
-    ODR_6_25_HZ = uint8_t(0x05),
-    ODR_3_1_HZ = uint8_t(0x06),
-    ODR_1_5_HZ = uint8_t(0x07),
-    ODR_0_78_HZ = uint8_t(0x08),
-    ODR_0_39_HZ = uint8_t(0x09),
-    ODR_0_2_HZ = uint8_t(0x0A),
-    ODR_0_1_HZ = uint8_t(0x0B),
-    ODR_0_05_HZ = uint8_t(0x0C),
-    ODR_0_02_HZ = uint8_t(0x0D),
-    ODR_0_01_HZ = uint8_t(0x0E),
-    ODR_0_006_HZ = uint8_t(0x0F),
-    ODR_0_003_HZ = uint8_t(0x10),
-    ODR_0_001_HZ = uint8_t(0x11)
+enum class BMP3_ODR : uint8_t {
+    ODR_200_HZ = 0x00,
+    ODR_100_HZ = 0x01,
+    ODR_50_HZ = 0x02,
+    ODR_25_HZ = 0x03,
+    ODR_12_5_HZ = 0x04,
+    ODR_6_25_HZ = 0x05,
+    ODR_3_1_HZ = 0x06,
+    ODR_1_5_HZ = 0x07,
+    ODR_0_78_HZ = 0x08,
+    ODR_0_39_HZ = 0x09,
+    ODR_0_2_HZ = 0x0A,
+    ODR_0_1_HZ = 0x0B,
+    ODR_0_05_HZ = 0x0C,
+    ODR_0_02_HZ = 0x0D,
+    ODR_0_01_HZ = 0x0E,
+    ODR_0_006_HZ = 0x0F,
+    ODR_0_003_HZ = 0x10,
+    ODR_0_001_HZ = 0x11
 };
 
-enum BMP3_E {
-    NULL_PTR = int8_t(-1),
-    DEV_NOT_FOUND = int8_t(-2),
-    INVALID_ODR_OSR_SETTINGS = int8_t(-3),
-    CMD_EXEC_FAILED = int8_t(-4),
-    CONFIGURATION_ERR = int8_t(-5),
-    INVALID_LEN = int8_t(-6),
-    COMM_FAIL = int8_t(-7),
-    FIFO_WATERMARK_NOT_REACHED = int8_t(-8),
+enum class BMP3_E : int8_t {
+    NULL_PTR = -1,
+    DEV_NOT_FOUND = -2,
+    INVALID_ODR_OSR_SETTINGS = -3,
+    CMD_EXEC_FAILED = -4,
+    CONFIGURATION_ERR = -5,
+    INVALID_LEN = -6,
+    COMM_FAIL = -7,
+    FIFO_WATERMARK_NOT_REACHED = -8,
 };
 
 /**\name values to select the which sensor settings are to be set by the user.
  * These values are internal for API implementation. Don't relate this to
  * data sheet. */
-enum BMP3_SEL {
-    PRESS_EN = uint16_t(1<<1),
-    TEMP_EN = uint16_t(1<<2),
-    DRDY_EN = uint16_t(1<<3),
-    PRESS_OS = uint16_t(1<<4),
-    TEMP_OS = uint16_t(1<<5),
-    IIR_FILTER = uint16_t(1<<6),
-    ODR = uint16_t(1<<7),
-    OUTPUT_MODE = uint16_t(1<<8),
-    LEVEL = uint16_t(1<<9),
-    LATCH = uint16_t(1<<10),
-    I2C_WDT_EN = uint16_t(1<<11),
-    I2C_WDT = uint16_t(1<<12),
-    ALL = uint16_t(0x7FF)
+enum class BMP3_SEL : uint16_t {
+    PRESS_EN = 1<<1,
+    TEMP_EN = 1<<2,
+    DRDY_EN = 1<<3,
+    PRESS_OS = 1<<4,
+    TEMP_OS = 1<<5,
+    IIR_FILTER = 1<<6,
+    ODR = 1<<7,
+    OUTPUT_MODE = 1<<8,
+    LEVEL = 1<<9,
+    LATCH = 1<<10,
+    I2C_WDT_EN = 1<<11,
+    I2C_WDT = 1<<12,
+    ALL = 0x7FF
 };
 
 /**\name values to select the which FIFO settings are to be set by the user
  * These values are internal for API implementation. Don't relate this to
  * data sheet.*/
-enum BMP3_SEL_FIFO {
-    MODE = uint16_t(1<<1),
-    STOP_ON_FULL_EN = uint16_t(1<<2),
-    TIME_EN = uint16_t(1<<3),
-    PRESS_EN = uint16_t(1<<4),
-    TEMP_EN = uint16_t(1<<5),
-    DOWN_SAMPLING = uint16_t(1<<6),
-    FILTER_EN = uint16_t(1<<7),
-    FWTM_EN = uint16_t(1<<8),
-    FULL_EN = uint16_t(1<<9)
+enum class BMP3_SEL_FIFO : uint16_t {
+    MODE = 1<<1,
+    STOP_ON_FULL_EN = 1<<2,
+    TIME_EN = 1<<3,
+    PRESS_EN = 1<<4,
+    TEMP_EN = 1<<5,
+    DOWN_SAMPLING = 1<<6,
+    FILTER_EN = 1<<7,
+    FWTM_EN = 1<<8,
+    FULL_EN = 1<<9
 };
 
-enum BMP3_MASKS {
-    ERR_FATAL = uint8_t(0x01),
+enum class BMP3_MASKS : uint8_t {
+    ERR_FATAL = 0x01,
     
-    ERR_CMD = uint8_t(0x02),
-    ERR_CMD_POS = uint8_t(0x01),
+    ERR_CMD = 0x02,
+    ERR_CMD_POS = 0x01,
     
-    ERR_CONF = uint8_t(0x04),
-    ERR_CONF_POS = uint8_t(0x02),
+    ERR_CONF = 0x04,
+    ERR_CONF_POS = 0x02,
     
-    STATUS_CMD_RDY = uint8_t(0x10),
-    STATUS_CMD_RDY_POS = uint8_t(0x04),
+    STATUS_CMD_RDY = 0x10,
+    STATUS_CMD_RDY_POS = 0x04,
     
-    STATUS_DRDY_PRESS = uint8_t(0x20),
-    STATUS_DRDY_PRESS_POS = uint8_t(0x05),
+    STATUS_DRDY_PRESS = 0x20,
+    STATUS_DRDY_PRESS_POS = 0x05,
     
-    STATUS_DRDY_TEMP = uint8_t(0x40),
-    STATUS_DRDY_TEMP_POS = uint8_t(0x06),
+    STATUS_DRDY_TEMP = 0x40,
+    STATUS_DRDY_TEMP_POS = 0x06,
     
-    OP_MODE = uint8_t(0x30),
-    OP_MODE_POS = uint8_t(0x04),
+    OP_MODE = 0x30,
+    OP_MODE_POS = 0x04,
     
-    PRESS_EN = uint8_t(0x01),
+    PRESS_EN = 0x01,
     
-    TEMP_EN = uint8_t(0x02),
-    TEMP_EN_POS = uint8_t(0x01),
+    TEMP_EN = 0x02,
+    TEMP_EN_POS = 0x01,
     
-    IIR_FILTER = uint8_t(0x0E),
-    IIR_FILTER_POS = uint8_t(0x01),
+    IIR_FILTER = 0x0E,
+    IIR_FILTER_POS = 0x01,
     
-    ODR = uint8_t(0x1F),
+    ODR = 0x1F,
     
-    PRESS_OS = uint8_t(0x07),
+    PRESS_OS = 0x07,
     
-    TEMP_OS = uint8_t(0x38),
-    TEMP_OS_POS = uint8_t(0x03),
+    TEMP_OS = 0x38,
+    TEMP_OS_POS = 0x03,
 
-    FIFO_MODE = uint8_t(0x01),
+    FIFO_MODE = 0x01,
 
-    FIFO_STOP_ON_FULL = uint8_t(0x02),
-    FIFO_STOP_ON_FULL_POS = uint8_t(0x01),
+    FIFO_STOP_ON_FULL = 0x02,
+    FIFO_STOP_ON_FULL_POS = 0x01,
 
-    FIFO_TIME_EN = uint8_t(0x04),
-    FIFO_TIME_EN_POS = uint8_t(0x02),
+    FIFO_TIME_EN = 0x04,
+    FIFO_TIME_EN_POS = 0x02,
 
-    FIFO_PRESS_EN = uint8_t(0x08),
-    FIFO_PRESS_EN_POS = uint8_t(0x03),
+    FIFO_PRESS_EN = 0x08,
+    FIFO_PRESS_EN_POS = 0x03,
 
-    FIFO_TEMP_EN = uint8_t(0x10),
-    FIFO_TEMP_EN_POS = uint8_t(0x04),
+    FIFO_TEMP_EN = 0x10,
+    FIFO_TEMP_EN_POS = 0x04,
 
-    FIFO_FILTER_EN = uint8_t(0x18),
-    FIFO_FILTER_EN_POS = uint8_t(0x03),
+    FIFO_FILTER_EN = 0x18,
+    FIFO_FILTER_EN_POS = 0x03,
 
-    FIFO_DOWN_SAMPLING = uint8_t(0x07),
+    FIFO_DOWN_SAMPLING = 0x07,
 
-    FIFO_FWTM_EN = uint8_t(0x08),
-    FIFO_FWTM_EN_POS = uint8_t(0x03),
+    FIFO_FWTM_EN = 0x08,
+    FIFO_FWTM_EN_POS = 0x03,
 
-    FIFO_FULL_EN = uint8_t(0x10),
-    FIFO_FULL_EN_POS = uint8_t(0x04),
+    FIFO_FULL_EN = 0x10,
+    FIFO_FULL_EN_POS = 0x04,
 
-    INT_OUTPUT_MODE = uint8_t(0x01),
+    INT_OUTPUT_MODE = 0x01,
 
-    INT_LEVEL = uint8_t(0x02),
-    INT_LEVEL_POS = uint8_t(0x01),
+    INT_LEVEL = 0x02,
+    INT_LEVEL_POS = 0x01,
 
-    INT_LATCH = uint8_t(0x04),
-    INT_LATCH_POS = uint8_t(0x02),
+    INT_LATCH = 0x04,
+    INT_LATCH_POS = 0x02,
 
-    INT_DRDY_EN = uint8_t(0x40),
-    INT_DRDY_EN_POS = uint8_t(0x06),
+    INT_DRDY_EN = 0x40,
+    INT_DRDY_EN_POS = 0x06,
 
-    I2C_WDT_EN = uint8_t(0x02),
-    I2C_WDT_EN_POS = uint8_t(0x01),
+    I2C_WDT_EN = 0x02,
+    I2C_WDT_EN_POS = 0x01,
 
-    I2C_WDT_SEL = uint8_t(0x04),
-    I2C_WDT_SEL_POS = uint8_t(0x02),
+    I2C_WDT_SEL = 0x04,
+    I2C_WDT_SEL_POS = 0x02,
 
-    INT_STATUS_FWTM = uint8_t(0x01),
+    INT_STATUS_FWTM = 0x01,
 
-    INT_STATUS_FFULL = uint8_t(0x02),
-    INT_STATUS_FFULL_POS = uint8_t(0x01),
+    INT_STATUS_FFULL = 0x02,
+    INT_STATUS_FFULL_POS = 0x01,
 
-    INT_STATUS_DRDY = uint8_t(0x08),
-    INT_STATUS_DRDY_POS = uint8_t(0x03),
+    INT_STATUS_DRDY = 0x08,
+    INT_STATUS_DRDY_POS = 0x03,
 };
 
-enum BMP3_LEN {
-    CALIB_DATA = uint8_t(21),
-    P_AND_T_HEADER_DATA = uint8_t(7),
+enum class BMP3_LEN : uint8_t {
+    CALIB_DATA = 21,
+    P_AND_T_HEADER_DATA = 7
 };
 
 

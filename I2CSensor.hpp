@@ -171,7 +171,7 @@ class I2CSensor {
          * @param len   The number of bytes in 'data'.
          * @return The computed CRC8 value.
          */
-        static uint8_t crc8(const uint8_t *data, int len) const {
+        static uint8_t crc8(const uint8_t *data, int len) {
             const uint8_t POLYNOMIAL(0x31);
             uint8_t crc(0xFF);
 
