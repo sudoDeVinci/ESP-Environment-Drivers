@@ -49,6 +49,31 @@
 #define BMP3_TEMP                               uint8_t(1 << 1)
 #define BMP3_ALL                                uint8_t(0x03)
 
+/**\name    UTILITY MACROS  */
+#define BMP3_SET_LOW_BYTE                       UINT16_C(0x00FF)
+#define BMP3_SET_HIGH_BYTE                      UINT16_C(0xFF00)
+
+/**\name Macro to combine two 8 bit data's to form a 16 bit data */
+#define BMP3_CONCAT_BYTES(msb, lsb)             (((uint16_t)msb << 8) | (uint16_t)lsb)
+
+#define BMP3_SET_BITS(reg_data, bitname, data) \
+    ((reg_data & ~(bitname##_MSK)) | \
+     ((data << bitname##_POS) & bitname##_MSK))
+
+/* Macro variant to handle the bitname position if it is zero */
+#define BMP3_SET_BITS_POS_0(reg_data, bitname, data) \
+    ((reg_data & ~(bitname##_MSK)) | \
+     (data & bitname##_MSK))
+
+#define BMP3_GET_BITS(reg_data, bitname)        ((reg_data & (bitname##_MSK)) >> \
+                                                 (bitname##_POS))
+
+/* Macro variant to handle the bitname position if it is zero */
+#define BMP3_GET_BITS_POS_0(reg_data, bitname)  (reg_data & (bitname##_MSK))
+
+#define BMP3_GET_LSB(var)                       (uint8_t)(var & BMP3_SET_LOW_BYTE)
+#define BMP3_GET_MSB(var)                       (uint8_t)((var & BMP3_SET_HIGH_BYTE) >> 8)
+
 
 enum BMP_REGS {
     CHIP_ID = 0x00,
@@ -162,7 +187,7 @@ enum BMP3_E {
     FIFO_WATERMARK_NOT_REACHED = int8_t(-8),
 };
 
-/**\name Macros to select the which sensor settings are to be set by the user.
+/**\name values to select the which sensor settings are to be set by the user.
  * These values are internal for API implementation. Don't relate this to
  * data sheet. */
 enum BMP3_SEL {
@@ -181,7 +206,7 @@ enum BMP3_SEL {
     ALL = uint16_t(0x7FF)
 };
 
-/**\name Macros to select the which FIFO settings are to be set by the user
+/**\name values to select the which FIFO settings are to be set by the user
  * These values are internal for API implementation. Don't relate this to
  * data sheet.*/
 enum BMP3_SEL_FIFO {
@@ -238,10 +263,55 @@ enum BMP3_MASKS {
     FIFO_STOP_ON_FULL_POS = uint8_t(0x01),
 
     FIFO_TIME_EN = uint8_t(0x04),
-    FIFO_TIME_EN_POS = uint8_t(0x02)
+    FIFO_TIME_EN_POS = uint8_t(0x02),
+
+    FIFO_PRESS_EN = uint8_t(0x08),
+    FIFO_PRESS_EN_POS = uint8_t(0x03),
+
+    FIFO_TEMP_EN = uint8_t(0x10),
+    FIFO_TEMP_EN_POS = uint8_t(0x04),
+
+    FIFO_FILTER_EN = uint8_t(0x18),
+    FIFO_FILTER_EN_POS = uint8_t(0x03),
+
+    FIFO_DOWN_SAMPLING = uint8_t(0x07),
+
+    FIFO_FWTM_EN = uint8_t(0x08),
+    FIFO_FWTM_EN_POS = uint8_t(0x03),
+
+    FIFO_FULL_EN = uint8_t(0x10),
+    FIFO_FULL_EN_POS = uint8_t(0x04),
+
+    INT_OUTPUT_MODE = uint8_t(0x01),
+
+    INT_LEVEL = uint8_t(0x02),
+    INT_LEVEL_POS = uint8_t(0x01),
+
+    INT_LATCH = uint8_t(0x04),
+    INT_LATCH_POS = uint8_t(0x02),
+
+    INT_DRDY_EN = uint8_t(0x40),
+    INT_DRDY_EN_POS = uint8_t(0x06),
+
+    I2C_WDT_EN = uint8_t(0x02),
+    I2C_WDT_EN_POS = uint8_t(0x01),
+
+    I2C_WDT_SEL = uint8_t(0x04),
+    I2C_WDT_SEL_POS = uint8_t(0x02),
+
+    INT_STATUS_FWTM = uint8_t(0x01),
+
+    INT_STATUS_FFULL = uint8_t(0x02),
+    INT_STATUS_FFULL_POS = uint8_t(0x01),
+
+    INT_STATUS_DRDY = uint8_t(0x08),
+    INT_STATUS_DRDY_POS = uint8_t(0x03),
 };
 
-
+enum BMP3_LEN {
+    CALIB_DATA = uint8_t(21),
+    P_AND_T_HEADER_DATA = uint8_t(7),
+};
 
 
 

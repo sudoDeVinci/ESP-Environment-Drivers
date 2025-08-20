@@ -173,5 +173,3 @@ struct SHT31 : public I2CSensor {
             return true;
         }
 };
-
-#endif
