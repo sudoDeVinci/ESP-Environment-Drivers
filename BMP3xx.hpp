@@ -49,9 +49,31 @@
 #define BMP3_TEMP                               uint8_t(1 << 1)
 #define BMP3_ALL                                uint8_t(0x03)
 
+/*! Power control settings */
+#define BMP3_POWER_CNTL                         uint16_t(0x0006)
+
+/*! Odr and filter settings */
+#define BMP3_ODR_FILTER                         uint16_t(0x00F0)
+
+/*! Interrupt control settings */
+#define BMP3_INT_CTRL                           uint16_t(0x0708)
+
+/*! Advance settings */
+#define BMP3_ADV_SETT                           uint16_t(0x1800)
+
+/*! Mask for fifo_mode, fifo_stop_on_full, fifo_time_en, fifo_press_en and
+ * fifo_temp_en settings */
+#define BMP3_FIFO_CONFIG_1                      uint16_t(0x003E)
+
+/*! Mask for fifo_sub_sampling and data_select settings */
+#define BMP3_FIFO_CONFIG_2                      uint16_t(0x00C0)
+
+/*! Mask for fwtm_en and ffull_en settings */
+#define BMP3_FIFO_INT_CTRL                      uint16_t(0x0300)
+
 /**\name    UTILITY MACROS  */
-#define BMP3_SET_LOW_BYTE                       UINT16_C(0x00FF)
-#define BMP3_SET_HIGH_BYTE                      UINT16_C(0xFF00)
+#define BMP3_SET_LOW_BYTE                       uint16_t(0x00FF)
+#define BMP3_SET_HIGH_BYTE                      uint16_t(0xFF00)
 
 /**\name Macro to combine two 8 bit data's to form a 16 bit data */
 #define BMP3_CONCAT_BYTES(msb, lsb)             (((uint16_t)msb << 8) | (uint16_t)lsb)
@@ -312,14 +334,291 @@ namespace BMP3 {
 
     enum class BMP3_LEN : uint8_t {
         CALIB_DATA = 21,
-        P_AND_T_HEADER_DATA = 7
+        P_AND_T_HEADER_DATA = 7,
+        P_OR_T_HEADER_DATA = 4,
+        P_T_DATA = 6,
+        GEN_SETT = 7,
+        P_DATA = 3,
+        T_DATA = 3,
+        SENSOR_TIME = 3,
+        FIFO_MAX_FRAMES = 73
     };
 
+    enum class BMP3_FIFO_FRAME : uint8_t {
+        TEMP_PRESS = 0x94,
+        TEMP = 0x90,
+        PRESS = 0x84,
+        TIME = 0xA0,
+        ERROR = 0x44,
+        CONFIG_CHANGE = 0x48
+    };
 }
 
 
+/*!
+ * @brief Register Trim Variables
+ */
+struct bmp3_reg_calib_data {
+    uint16_t par_t1;
+    uint16_t par_t2;
+    int8_t par_t3;
+    int16_t par_p1;
+    int16_t par_p2;
+    int8_t par_p3;
+    int8_t par_p4;
+    uint16_t par_p5;
+    uint16_t par_p6;
+    int8_t par_p7;
+    int8_t par_p8;
+    int16_t par_p9;
+    int8_t par_p10;
+    int8_t par_p11;
+    int64_t t_lin;
+};
+
+/*!
+ * @brief bmp3 advance settings
+ */
+struct bmp3_adv_settings {
+    /*! i2c watch dog enable */
+    uint8_t i2c_wdt_en;
+    /*! i2c watch dog select */
+    uint8_t i2c_wdt_sel;
+};
+
+/*!
+ * @brief bmp3 odr and filter settings
+ */
+struct bmp3_odr_filter_settings {
+    /*! Pressure oversampling */
+    uint8_t press_os;
+    /*! Temperature oversampling */
+    uint8_t temp_os;
+    /*! IIR filter */
+    uint8_t iir_filter;
+    /*! Output data rate */
+    uint8_t odr;
+};
+
+/*!
+ * @brief bmp3 sensor status flags
+ */
+struct bmp3_sens_status {
+    /*! Command ready status */
+    uint8_t cmd_rdy;
+    /*! Data ready for pressure */
+    uint8_t drdy_press;
+    /*! Data ready for temperature */
+    uint8_t drdy_temp;
+};
+
+/*!
+ * @brief bmp3 interrupt status flags
+ */
+struct bmp3_int_status {
+    /*! fifo watermark interrupt */
+    uint8_t fifo_wm;
+    /*! fifo full interrupt */
+    uint8_t fifo_full;
+    /*! data ready interrupt */
+    uint8_t drdy;
+};
+
+/*!
+ * @brief bmp3 error status flags
+ */
+struct bmp3_err_status {
+    /*! fatal error */
+    uint8_t fatal;
+    /*! command error */
+    uint8_t cmd;
+    /*! configuration error */
+    uint8_t conf;
+};
+
+/*!
+ * @brief bmp3 status flags
+ */
+struct bmp3_status {
+    /*! Interrupt status */
+    struct bmp3_int_status intr;
+    /*! Sensor status */
+    struct bmp3_sens_status sensor;
+    /*! Error status */
+    struct bmp3_err_status err;
+    /*! power on reset status */
+    uint8_t pwr_on_rst;
+};
+
+/*!
+ * @brief bmp3 interrupt pin settings
+ */
+struct bmp3_int_ctrl_settings {
+    /*! Output mode */
+    uint8_t output_mode;
+    /*! Active high/low */
+    uint8_t level;
+    /*! Latched or Non-latched */
+    uint8_t latch;
+    /*! Data ready interrupt */
+    uint8_t drdy_en;
+};
+
+/*!
+ * @brief bmp3 device settings
+ */
+struct bmp3_settings {
+    /*! Power mode which user wants to set */
+    uint8_t op_mode;
+    /*! Enable/Disable pressure sensor */
+    uint8_t press_en;
+    /*! Enable/Disable temperature sensor */
+    uint8_t temp_en;
+    /*! ODR and filter configuration */
+    struct bmp3_odr_filter_settings odr_filter;
+    /*! Interrupt configuration */
+    struct bmp3_int_ctrl_settings int_settings;
+    /*! Advance settings */
+    struct bmp3_adv_settings adv_settings;
+};
+
+/*!
+ * @brief bmp3 fifo frame
+ */
+struct bmp3_fifo_data {
+    /*! Data buffer of user defined length is to be mapped here
+     * 512 + 4 */
+    uint8_t *buffer;
+    /*! Number of bytes of data read from the fifo */
+    uint16_t byte_count;
+    /*! Number of frames to be read as specified by the user */
+    uint8_t req_frames;
+    /*! Will be equal to length when no more frames are there to parse */
+    uint16_t start_idx;
+    /*! Will contain the no of parsed data frames from fifo */
+    uint8_t parsed_frames;
+    /*! Configuration error */
+    uint8_t config_err;
+    /*! Sensor time */
+    uint32_t sensor_time;
+    /*! FIFO input configuration change */
+    uint8_t config_change;
+    /*! All available frames are parsed */
+    uint8_t frame_not_available;
+};
+
+/*!
+ * @brief bmp3 fifo configuration
+ */
+struct bmp3_fifo_settings {
+    /*! enable/disable */
+    uint8_t mode;
+    /*! stop on full enable/disable */
+    uint8_t stop_on_full_en;
+    /*! time enable/disable */
+    uint8_t time_en;
+    /*! pressure enable/disable */
+    uint8_t press_en;
+    /*! temperature enable/disable */
+    uint8_t temp_en;
+    /*! down sampling rate */
+    uint8_t down_sampling;
+    /*! filter enable/disable */
+    uint8_t filter_en;
+    /*! FIFO watermark enable/disable */
+    uint8_t fwtm_en;
+    /*! FIFO full enable/disable */
+    uint8_t ffull_en;
+};
+
+/*!
+ * @brief bmp3 bmp3 FIFO
+ */
+struct bmp3_fifo {
+    /*! FIFO frame structure */
+    struct bmp3_fifo_data data;
+    /*! FIFO config structure */
+    struct bmp3_fifo_settings settings;
+};
 
 
+/*!
+ * @brief bmp3 sensor structure which comprises of temperature and pressure
+ * data.
+ */
+struct bmp3_data {
+    /*! Compensated temperature */
+    int64_t temperature;
+    /*! Compensated pressure */
+    uint64_t pressure;
+};
+
+/*!
+ * @brief Calibration data
+ */
+struct bmp3_calib_data {
+    /*! Register data */
+    struct bmp3_reg_calib_data reg_calib_data;
+};
 
 
+/*!
+ * @brief bmp3 sensor structure which comprises of un-compensated temperature
+ * and pressure data.
+ */
+struct bmp3_uncomp_data {
+    /*! un-compensated pressure */
+    uint32_t pressure;
+    /*! un-compensated temperature */
+    uint32_t temperature;
+};
+
+/*!
+ * @brief bmp3 device structure
+ */
+struct bmp3_dev {
+    /*! Chip Id */
+    uint8_t chip_id;
+
+    /*!
+     * The interface pointer is used to enable the user
+     * to link their interface descriptors for reference during the
+     * implementation of the read and write interfaces to the
+     * hardware.
+     */
+    void *intf_ptr;
+
+    /*! Interface Selection
+     * For SPI, interface = BMP3_SPI_INTF
+     * For I2C, interface = BMP3_I2C_INTF
+     **/
+    enum bmp3_intf intf;
+
+    /*! To store interface pointer error */
+    BMP3_INTF_RET_TYPE intf_rslt;
+
+    /*! Decide SPI or I2C read mechanism */
+    uint8_t dummy_byte;
+
+    /*! Read function pointer */
+    bmp3_read_fptr_t read;
+
+    /*! Write function pointer */
+    bmp3_write_fptr_t write;
+
+    /*! Delay function pointer */
+    bmp3_delay_us_fptr_t delay_us;
+
+    /*! Trim data */
+    struct bmp3_calib_data calib_data;
+
+    /*! Sensor Settings */
+    struct bmp3_settings settings;
+
+    /*! Sensor and interrupt status flags */
+    struct bmp3_status status;
+
+    /*! FIFO data and settings structure */
+    struct bmp3_fifo *fifo;
+};
 
