@@ -1,6 +1,6 @@
-#include "MPU6050.hpp"
-#include "SHT31D.hpp"
-#include "BMP3xx.hpp"
+#include "MPU6050/MPU6050.hpp"
+#include "SHT3X/SHT31D.hpp"
+#include "BMP/BMP3xx.hpp"
 
 
 #define I2C_BUS_0_SDA 21
