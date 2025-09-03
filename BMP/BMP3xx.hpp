@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BMP/bmpdefs.hpp"
+#include "BMP/bmp_defs.hpp"
 #include "I2CSensor.hpp"
 #include <Wire.h>
 #include <array>

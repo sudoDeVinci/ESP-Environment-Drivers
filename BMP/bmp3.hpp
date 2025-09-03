@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BMP/bmpdefs.hpp"
+#include "BMP/bmp_defs.hpp"
 
 /**
  * @details This is the API entry point for initializing the BMP3 sensor.
@@ -42,7 +42,7 @@ int8_t bmp3_soft_reset(struct bmp3_dev *dev);
  * @note : Below are the enum values to be used by the user for selecting the
  * desired settings. User can do OR operation of these values for configuring
  * multiple settings.
- *
+ 
  * @verbatim
  * Enum values                |   Functionality
  * ---------------------------|----------------------------------------------

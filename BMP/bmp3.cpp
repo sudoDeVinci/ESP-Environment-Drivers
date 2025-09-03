@@ -1,4 +1,4 @@
-#include "bmp3.h"
+#include "BMP/bmp3.hpp"
 
 
 /**
