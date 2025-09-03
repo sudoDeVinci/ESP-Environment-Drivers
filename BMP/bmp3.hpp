@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bmpdefs.hpp"
+#include "BMP/bmpdefs.hpp"
 
 /**
  * @details This is the API entry point for initializing the BMP3 sensor.
