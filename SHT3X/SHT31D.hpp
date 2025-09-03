@@ -92,7 +92,7 @@ struct SHT31 : public I2CSensor {
          * This method sends a command to turn off the heater.
          */
         void disableHeater(void) {
-            writeCommand(HEATER_OFF);
+            writeCommand(sht::CMDS::HEATER_OFF);
             this -> heaterEnabled = false;
         }
 

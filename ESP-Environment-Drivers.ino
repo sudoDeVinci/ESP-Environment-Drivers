@@ -8,12 +8,12 @@
 
 // Instances of your sensors would usually live in a global scope
 MPU_XYZ gyroreading;
-MPU6050 mpu(0, I2C_BUS_0_SDA, I2C_BUS_0_SCL);
+MPU6050 mpusensor(0, I2C_BUS_0_SDA, I2C_BUS_0_SCL);
 
 void setup() {
     Serial.begin(115200);
     
-    if (!mpu.init()) {
+    if (!mpusensor.init()) {
         Serial.println("Failed to initialize MPU6050!");
         while (1) { delay(1000); }
     } else {
@@ -22,7 +22,7 @@ void setup() {
 }
 
 void loop() {
-    gyroreading = mpu.readGyro();
+    gyroreading = mpusensor.readGyro();
     Serial.printf("Gyro X: %.2f, Y: %.2f, Z: %.2f\n", gyroreading[0], gyroreading[1], gyroreading[2]);
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 }

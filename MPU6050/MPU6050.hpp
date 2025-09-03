@@ -93,7 +93,7 @@ class MPU6050 : public I2CSensor {
             uint8_t bus_num,
             uint8_t sda,
             uint8_t scl,
-            DLPF_CFG filter = mpu::DLPF_CFG::DLPF_256HZ,
+            mpu::DLPF_CFG filter = mpu::DLPF_CFG::DLPF_256HZ,
             mpu::LSB_SENSITIVITY lsb = mpu::LSB_SENSITIVITY::LSB_65P5
         ): I2CSensor(MPU6050_ADDR, bus_num, sda, scl, 10000, 400000), filter(filter)  {
             this->sensitivity = LSB_MAP.at(lsb);
