@@ -12,5 +12,3 @@ struct BMP3XX : public I2CSensor {
         float pressurel;
 };
 
-
-
