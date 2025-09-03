@@ -9,7 +9,7 @@ struct BMP3XX : public I2CSensor {
 
     protected:
         float temperature;
-        float pressure
+        float pressurel;
 };
 
 
