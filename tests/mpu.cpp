@@ -2,23 +2,23 @@
 
 #include <AUnit.h>
 #include "../I2CManager.hpp"
-#include "../MPU6050.hpp"
+#include "../MPU6050/MPU6050.hpp"
 
 test(MPU6050_Construction) {
-    MPU6050 mpu(0, 21, 22);
+    MPU6050 sensor(0, 21, 22);
     
-    assertEqual(mpu.getAddress(), MPU6050_ADDR);
-    assertEqual(mpu.getBusNum(), 0);
-    assertEqual(mpu.getSdaPin(), 21);
-    assertEqual(mpu.getSclPin(), 22);
-    assertFalse(mpu.isInitialized());
+    assertEqual(sensor.getAddress(), MPU6050_ADDR);
+    assertEqual(sensor.getBusNum(), 0);
+    assertEqual(sensor.getSdaPin(), 21);
+    assertEqual(sensor.getSclPin(), 22);
+    assertFalse(sensor.isInitialized());
 }
 
 test(MPU6050_EnumValues) {
     // Test DLPF_CFG enum values
-    assertEqual(static_cast<uint8_t>(DLPF_256HZ), 0x00);
-    assertEqual(static_cast<uint8_t>(DLPF_188HZ), 0x01);
-    assertEqual(static_cast<uint8_t>(DLPF_5HZ), 0x06);
+    assertEqual(static_cast<uint8_t>(mpu::DLPF_CFG::DLPF_256HZ), 0x00);
+    assertEqual(static_cast<uint8_t>(mpu::DLPF_CFG::DLPF_188HZ), 0x01);
+    assertEqual(static_cast<uint8_t>(mpu::DLPF_CFG::DLPF_5HZ), 0x06);
     
     // Test LSB_SENSITIVITY enum values
     assertEqual(static_cast<uint8_t>(LSB_131P0), 0x00);

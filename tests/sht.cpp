@@ -1,7 +1,7 @@
 #ifdef EPOXY_DUINO
 
 #include <AUnit.h>
-#include "../SHT31D.hpp"
+#include "../SHT3X/SHT31D.hpp"
 
 test(SHT31D_Construction) {
     SHT31 sensor(0, 21, 22);
