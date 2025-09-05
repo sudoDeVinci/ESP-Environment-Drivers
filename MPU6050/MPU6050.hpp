@@ -12,6 +12,7 @@
     /**
      * std::clamp doesn't exist before cpp17, so we may not have it.
      * the STL is also still lacking for AUnit right now - drop in replacement.
+     * constexpr is here to match the STL version and speed up unit tests.
      */
     template<class T>
     constexpr const T& clamp(const T& v, const T& lo, const T& hi) {
@@ -150,7 +151,7 @@ class MPU6050 : public I2CSensor {
          * This method reads raw gyro data from the sensor and applies sensitivity scaling and offsets.
          * @return An MPU_XYZ containing the scaled gyro values for each axis.
          */
-        MPU_XYZ readGyro() const;
+        MPU_XYZ readGyro(void) const;
 
         /**
          * Reads multiple gyro samples and averages them.
