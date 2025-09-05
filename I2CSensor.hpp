@@ -15,7 +15,7 @@ using UniqueTimedMutex = std::unique_lock<std::timed_mutex>;
 
 namespace i2cs{
     constexpr std::chrono::milliseconds I2C_TIMEOUT_MS = std::chrono::milliseconds(100);
-    const uint16_t MAX_SAMPLES = 100;
+    constexpr uint16_t MAX_SAMPLES = 100;
 };
 
 /**

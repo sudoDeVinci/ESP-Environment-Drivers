@@ -140,7 +140,7 @@ class MPU6050 : public I2CSensor {
          * This method collects a specified number of samples and computes the average offsets for each axis.
          * @param samples The number of samples to average for calibration.
          */
-        void calibrateGyro(uint16_t samples = MAX_SAMPLES) {
+        void calibrateGyro(uint16_t samples = i2cs::MAX_SAMPLES) {
             this -> gyroOffsets = {0.0f, 0.0f, 0.0f};
             MPU_XYZ offsets = this->readGyroSampled(samples);
             this->gyroOffsets = offsets;
@@ -159,5 +159,5 @@ class MPU6050 : public I2CSensor {
          * @param samples The number of samples to average.
          * @return An averaged MPU_XYZ containing the mean values for each axis.
          */
-        MPU_XYZ readGyroSampled(uint16_t samples = MAX_SAMPLES) const;
+        MPU_XYZ readGyroSampled(uint16_t samples = i2cs::MAX_SAMPLES) const;
 };
