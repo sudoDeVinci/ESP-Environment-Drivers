@@ -75,7 +75,7 @@ struct SHT31 : public I2CSensor {
          */
         void reset(void) const {
             writeCommand(sht::CMDS::SOFTRESET);
-            vTaskDelay(SHT31::I2C_INIT_DELAY_MS);
+            vTaskDelay(i2cs::I2C_INIT_DELAY_MS);
         }
 
         /**

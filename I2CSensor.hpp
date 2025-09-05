@@ -14,6 +14,17 @@
 using UniqueTimedMutex = std::unique_lock<std::timed_mutex>;
 
 namespace i2cs{
+    /**
+     * AUnit doesn't have RTOS functions so we give whatever values we want here.
+     * These technically don't matter for testing.
+     */
+    #ifdef EPOXY_DUINO
+        constexpr uint32_t I2C_DELAY_MS = 5;
+        constexpr uint32_t I2C_INIT_DELAY_MS = 250;
+    #else
+        constexpr uint32_t I2C_DELAY_MS = 5 / portTICK_PERIOD_MS;
+        constexpr uint32_t I2C_INIT_DELAY_MS = 250 / portTICK_PERIOD_MS;
+    #endif
     constexpr std::chrono::milliseconds I2C_TIMEOUT_MS = std::chrono::milliseconds(100);
     constexpr uint16_t MAX_SAMPLES = 100;
 };
@@ -90,18 +101,6 @@ class I2CSensor {
         uint32_t _min_clock_hz;
         uint32_t _max_clock_hz;
         mutable std::timed_mutex _i2cMutex;
-        
-        /**
-         * AUnit doesn't have RTOS functions so we give whatever values we want here.
-         * These technically don't matter for testing.
-         */
-        #ifdef EPOXY_DUINO
-            static constexpr uint32_t I2C_DELAY_MS = 5;
-            static constexpr uint32_t I2C_INIT_DELAY_MS = 250;
-        #else
-            static constexpr uint32_t I2C_DELAY_MS = 5 / portTICK_PERIOD_MS;
-            static constexpr uint32_t I2C_INIT_DELAY_MS = 250 / portTICK_PERIOD_MS;
-        #endif
 
         /**
          * Pointer to the TwoWire instance used for I2C communication.
@@ -125,7 +124,7 @@ class I2CSensor {
             } else {
                 // TODO: Some logging - will handle later after base functionality is working
             }
-            vTaskDelay(I2C_DELAY_MS);
+            vTaskDelay(i2cs::I2C_DELAY_MS);
         }
 
         /**
@@ -141,7 +140,7 @@ class I2CSensor {
             } else {
                 // TODO: Some logging - will handle later after base functionality is working
             }
-            vTaskDelay(I2C_DELAY_MS);
+            vTaskDelay(i2cs::I2C_DELAY_MS);
         }
         
         /**
@@ -163,7 +162,7 @@ class I2CSensor {
                 // TODO: Some logging - will handle later after base functionality is working
             }
 
-            vTaskDelay(I2C_DELAY_MS);
+            vTaskDelay(i2cs::I2C_DELAY_MS);
         }
 
         /**
