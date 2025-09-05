@@ -31,7 +31,7 @@ uint16_t SHT31::readStatus(void) const {
  * processes the data, and updates the internal temperature and humidity values.
  * @return True if the read was successful, false otherwise.
  */
-bool SHT31::update(void) override {
+bool SHT31::update(void) {
     writeCommand(sht::MEASUREMENT_MODE::MEDREP);
     uint8_t readbuffer[6];
     vTaskDelay(20 / portTICK_PERIOD_MS);
