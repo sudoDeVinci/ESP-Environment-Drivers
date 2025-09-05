@@ -13,6 +13,10 @@
 
 using UniqueTimedMutex = std::unique_lock<std::timed_mutex>;
 
+namespace i2cs{
+    constexpr std::chrono::milliseconds I2C_TIMEOUT_MS = std::chrono::milliseconds(100);
+    const uint16_t MAX_SAMPLES = 100;
+};
 
 /**
  * Base class for I2C sensors.
@@ -49,7 +53,7 @@ class I2CSensor {
         int getSclPin(void) const { return _scl_pin; }
         uint32_t getMinClock(void) const { return _min_clock_hz; }
         uint32_t getMaxClock(void) const { return _max_clock_hz; }
-        uint16_t getMaxSamples(void) const { return MAX_SAMPLES; }
+        uint32_t getMaxSamples(void) const { return i2cs::MAX_SAMPLES; }
         bool isInitialized(void) const { return _is_initialized; }
         void setWire(TwoWire* wire) { _wire = wire; }
         void setInitialized(bool initialized) { _is_initialized = initialized; }
@@ -86,9 +90,6 @@ class I2CSensor {
         uint32_t _min_clock_hz;
         uint32_t _max_clock_hz;
         mutable std::timed_mutex _i2cMutex;
-        static constexpr std::chrono::milliseconds I2C_TIMEOUT_MS = std::chrono::milliseconds(100);
-        
-        static const uint16_t MAX_SAMPLES = 100;
         
         /**
          * AUnit doesn't have RTOS functions so we give whatever values we want here.
@@ -116,7 +117,7 @@ class I2CSensor {
          */
         void writeToReg(uint8_t reg, uint8_t value) const {
             UniqueTimedMutex lock(_i2cMutex, std::defer_lock);
-            if (lock.try_lock_for(I2CSensor::I2C_TIMEOUT_MS)) {
+            if (lock.try_lock_for(i2cs::I2C_TIMEOUT_MS)) {
                 _wire->beginTransmission(_i2c_addr);
                 _wire->write(reg);
                 _wire->write(value);
@@ -133,7 +134,7 @@ class I2CSensor {
          */
         void writeToReg(uint8_t reg) const {
             UniqueTimedMutex lock(_i2cMutex, std::defer_lock);
-            if (lock.try_lock_for(I2CSensor::I2C_TIMEOUT_MS)) {
+            if (lock.try_lock_for(i2cs::I2C_TIMEOUT_MS)) {
                 _wire->beginTransmission(_i2c_addr);
                 _wire->write(reg);
                 _wire->endTransmission();
@@ -154,7 +155,7 @@ class I2CSensor {
             };
 
             UniqueTimedMutex lock(_i2cMutex, std::defer_lock);
-            if (lock.try_lock_for(I2C_TIMEOUT_MS)) {
+            if (lock.try_lock_for(i2cs::I2C_TIMEOUT_MS)) {
                 _wire->beginTransmission(_i2c_addr);
                 _wire->write(cmdBytes.data(), cmdBytes.size());
                 _wire->endTransmission();
@@ -348,5 +349,3 @@ class I2CSensor {
             return filtered;
         }
 };
-
-constexpr std::chrono::milliseconds I2CSensor::I2C_TIMEOUT_MS;

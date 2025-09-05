@@ -25,7 +25,7 @@ MPU_XYZ MPU6050::readGyro() const{
 
     {
         UniqueTimedMutex lock(this->_i2cMutex, std::defer_lock);
-        if (lock.try_lock_for(MPU6050::I2C_TIMEOUT_MS)) {
+        if (lock.try_lock_for(i2cs::I2C_TIMEOUT_MS)) {
         
             _wire->requestFrom(this->_i2c_addr, (uint8_t)6);
             for (size_t i = 0; i < 3; ++i) {
@@ -53,9 +53,9 @@ MPU_XYZ MPU6050::readGyroSampled(uint16_t samples) const {
     if (!this->_is_initialized) return {0.0f, 0.0f, 0.0f};
 
     #ifndef EPOXY_DUINO
-        samples = std::clamp(samples, (uint16_t)30, MAX_SAMPLES);
+        samples = std::clamp(samples, (uint16_t)30, i2cs::MAX_SAMPLES);
     #else
-        samples = clamp(samples, (uint16_t)30, MAX_SAMPLES);
+        samples = clamp(samples, (uint16_t)30, i2cs::MAX_SAMPLES);
     #endif
     
     std::array<std::vector<float>, 3> gyroSamples;

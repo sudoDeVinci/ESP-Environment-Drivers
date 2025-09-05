@@ -10,7 +10,7 @@ uint16_t SHT31::readStatus(void) const {
     uint8_t data[3] = {0, 0, 0};
 
     UniqueTimedMutex lock(this->_i2cMutex, std::defer_lock);
-    if (lock.try_lock_for(SHT31::I2C_TIMEOUT_MS)) {
+    if (lock.try_lock_for(i2cs::I2C_TIMEOUT_MS)) {
         if (this->_wire->requestFrom(this->_i2c_addr, (uint8_t)3) == 3) {
             data[0] = this->_wire->read();
             data[1] = this->_wire->read();
@@ -38,7 +38,7 @@ bool SHT31::update(void) {
 
     {
         UniqueTimedMutex lock(this->_i2cMutex, std::defer_lock);
-        if (lock.try_lock_for(SHT31::I2C_TIMEOUT_MS)) {
+        if (lock.try_lock_for(i2cs::I2C_TIMEOUT_MS)) {
             
             if (this->_wire->requestFrom(this->_i2c_addr, (uint8_t)6) != 6) return false;
 
