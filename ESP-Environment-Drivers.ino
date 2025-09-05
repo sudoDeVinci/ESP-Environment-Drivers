@@ -1,7 +1,4 @@
 #include "MPU6050/MPU6050.cpp"
-#include "SHT3X/SHT31D.cpp"
-#include "BMP/BMP3xx.cpp"
-
 
 #define I2C_BUS_0_SDA 21
 #define I2C_BUS_0_SCL 22
