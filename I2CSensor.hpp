@@ -350,4 +350,4 @@ class I2CSensor {
     };
 
 
-inline constexpr std::chrono::milliseconds I2CSensor::I2C_TIMEOUT_MS;
+constexpr std::chrono::milliseconds I2CSensor::I2C_TIMEOUT_MS;
