@@ -24,10 +24,10 @@ test(SHT31D_InitialReadings) {
 test(SHT31D_EnumValues) {
     // Test command enum values
     assertEqual(static_cast<uint16_t>(sht::CMDS::READSTATUS), 0xF32D);
-    assertEqual(static_cast<uint16_t>(sht::CMDS::READSTATUSCLEARSTATUS), 0x3041);
-    assertEqual(static_cast<uint16_t>(sht::CMDS::READSTATUSSOFTRESET), 0x30A2);
-    assertEqual(static_cast<uint16_t>(sht::CMDS::READSTATUSHEATER_ON), 0x306D);
-    assertEqual(static_cast<uint16_t>(sht::CMDS::READSTATUSHEATER_OFF), 0x3066);
+    assertEqual(static_cast<uint16_t>(sht::CMDS::CLEARSTATUS), 0x3041);
+    assertEqual(static_cast<uint16_t>(sht::CMDS::SOFTRESET), 0x30A2);
+    assertEqual(static_cast<uint16_t>(sht::CMDS::HEATER_ON), 0x306D);
+    assertEqual(static_cast<uint16_t>(sht::CMDS::HEATER_OFF), 0x3066);
     
     // Test measurement mode enum values
     assertEqual(static_cast<uint16_t>(sht::MEASUREMENT_MODE::LOWREP), 0x2416);
