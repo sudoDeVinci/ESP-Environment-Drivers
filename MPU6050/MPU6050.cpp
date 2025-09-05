@@ -1,5 +1,15 @@
 #include "MPU6050/MPU6050.hpp"
 
+/**
+ * Mapping of LSB sensitivity values to their corresponding sensitivity factors.
+ * This is used to convert raw gyro readings into meaningful values.
+ */
+const std::unordered_map<mpu::LSB_SENSITIVITY, float> MPU6050::LSB_MAP = {
+    {mpu::LSB_SENSITIVITY::LSB_131P0, 131.00f},
+    {mpu::LSB_SENSITIVITY::LSB_65P5, 65.50f},
+    {mpu::LSB_SENSITIVITY::LSB_32P8, 32.80f},
+    {mpu::LSB_SENSITIVITY::LSB_16P4, 16.40f}
+};
 
 /**
  * Reads the gyro data from the MPU6050 sensor.

@@ -161,14 +161,3 @@ class MPU6050 : public I2CSensor {
          */
         MPU_XYZ readGyroSampled(uint16_t samples = MAX_SAMPLES) const;
 };
-
-/**
- * Mapping of LSB sensitivity values to their corresponding sensitivity factors.
- * This is used to convert raw gyro readings into meaningful values.
- */
-const std::unordered_map<mpu::LSB_SENSITIVITY, float> MPU6050::LSB_MAP = {
-    {mpu::LSB_SENSITIVITY::LSB_131P0, 131.00f},
-    {mpu::LSB_SENSITIVITY::LSB_65P5, 65.50f},
-    {mpu::LSB_SENSITIVITY::LSB_32P8, 32.80f},
-    {mpu::LSB_SENSITIVITY::LSB_16P4, 16.40f}
-};
