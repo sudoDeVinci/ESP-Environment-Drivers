@@ -14,6 +14,8 @@ CPPFLAGS += -I$(AUNIT_DIR)/src
 
 # Add only.cpp source files here
 OBJS += ../I2CManager.o
+OBJS += ../MPU6050/MPU6050.o
+OBJS += ../SHT3X/SHT31D.o
 
 # Include all test files
 OBJS += sensorManager.o
