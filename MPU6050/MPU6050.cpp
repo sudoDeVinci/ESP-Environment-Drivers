@@ -38,7 +38,7 @@ MPU_XYZ MPU6050::readGyro() const{
  * @param samples The number of samples to average.
  * @return An averaged MPU_XYZ containing the mean values for each axis.
  */
-MPU_XYZ MPU6050::readGyroSampled(uint16_t samples = MAX_SAMPLES) const {
+MPU_XYZ MPU6050::readGyroSampled(uint16_t samples) const {
     
     if (!this->_is_initialized) return {0.0f, 0.0f, 0.0f};
 
