@@ -347,7 +347,4 @@ class I2CSensor {
 
             return filtered;
         }
-    };
-
-
-constexpr std::chrono::milliseconds I2CSensor::I2C_TIMEOUT_MS;
+};
