@@ -354,14 +354,3 @@ int8_t bmp3_fifo_flush(struct bmp3_dev *dev);
 int8_t bmp3_get_status(struct bmp3_dev *dev);
 
 
-
-
-
-
-
-
-
-
-
-
-

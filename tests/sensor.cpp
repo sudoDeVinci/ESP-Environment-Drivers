@@ -13,7 +13,7 @@ public:
     TestUtilsSensor() : I2CSensor(0x48, 0, 21, 22, 100000, 400000) {}
     bool update() override { return this->_is_initialized; }
     
-    // Expose protected methods for testing
+    // Exposing protected methods for testing
     template<typename T, size_t N>
     float testMean(const std::array<T, N>& arr) const { return mean(arr); }
     
