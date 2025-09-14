@@ -14,6 +14,10 @@
 #define BMP3_INTF_RET_TYPE                      int8_t
 #endif
 
+#define NULL                                    0
+#define TRUE                                    uint8_t(1)
+#define FALSE                                   uint8_t(0)
+
 /**
  * The last error code from read/write interface is stored in the device structure as intf_rslt.
  */
@@ -649,6 +653,13 @@ struct bmp3_uncomp_data {
  * @brief bmp3 device structure
  */
 struct bmp3_dev {
+    /**
+     * Decide SPI or I2C read mechanism
+     * This field is deprecated since we only use I2C.
+     * This field is kept for compatibility with existing code.
+     */
+    const uint8_t dummy_byte = 0;
+
     /*! Chip Id */
     uint8_t chip_id;
 
@@ -668,9 +679,6 @@ struct bmp3_dev {
 
     /*! To store interface pointer error */
     BMP3_INTF_RET_TYPE intf_rslt;
-
-    /*! Decide SPI or I2C read mechanism */
-    uint8_t dummy_byte;
 
     /*! Read function pointer */
     bmp3_read_fptr_t read;
